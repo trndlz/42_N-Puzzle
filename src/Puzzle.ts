@@ -1,10 +1,10 @@
-const targetPuzzle: Puzzle {
+// const targetPuzzle: Puzzle {
 
-}
+// }
 
-interface Puzzle {
-    initialArray 
-}
+// interface Puzzle {
+//     initialArray 
+// }
 
 enum Direction {
     Up,
