@@ -4,6 +4,8 @@ import cors from "cors";
 import express from "express";
 import routes from "./routes";
 import { spiralArray } from "./components/spiralArray";
+import NPuzzle from "./Puzzle";
+import fs from "fs";
 
 class App {
 
@@ -13,9 +15,19 @@ class App {
         this.app = express();
         this.config();
         const a = spiralArray(5)
-        a.forEach(i => console.log(i))
-    }
+        // a.forEach(i => console.log(i))
 
+        const test = new NPuzzle({
+            inputStr: "1 2 3 4 5 6 7 8 0",
+            heuristics: "manhattan",
+            size: 8,
+        })
+
+        const bbb = fs.readFileSync("test1").toString("utf-8");
+        // console.log(bbb)
+        test.parseInputString(bbb)
+
+    }
 
 
     private config(): void {

@@ -33,6 +33,7 @@
     "concurrently": "^4.1.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "fs": "0.0.1-security",
     "nodemon": "^1.19.1",
     "tslint-react": "^4.0.0"
   }
