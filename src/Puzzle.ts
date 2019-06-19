@@ -1,11 +1,3 @@
-// const targetPuzzle: Puzzle {
-
-// }
-
-// interface Puzzle {
-//     initialArray 
-// }
-
 enum Direction {
     Up,
     Down,
@@ -20,9 +12,9 @@ export interface IPuzzleInput {
     solvable?: boolean;
 }
 
-type puzzleArray = number[][];
+export type puzzleArray = number[][];
 
-interface IPuzzleNode {
+export interface IPuzzleNode {
     values: puzzleArray;
     f: number;
     g: number;
@@ -37,21 +29,28 @@ export default class NPuzzle {
     }
 
     public parseInputString(input: string) {
-        const isError = false;
-        const lines = input.split(/\n/);
-        lines.forEach(line => {
-            if (line[0] !== "#" && line.match(/[^\d]/g)) {
-                console.log(line.replace(/\s/g, ""))
-            }
-        })
-
-        // const puzzleArray = lines.map(line => line.match(/[\d]+/g)).filter(Boolean);
-        console.log(lines);
-        // const size = lines.map(line => line.find(i => i.length === 1)
-        // console.log(size);
+        const lines: string[] = input.split(/\n/);
+        if (this.isForbidenChars(lines)) {
+            console.log("ALERTE !!!")
+        }
+        const pp: string[][] = lines.map(line => line.match(/[\d]+/g)).filter(Boolean).map((value, index, array) => value)
+        const bb: puzzleArray = pp.map(a => a.map(b => parseInt(b, 10))).filter(a => a.length !== 1)
+        if (this.isUnexpectedNumbers(bb)) {
+            console.log("ALERTE !!!")
+        }
     }
 
-    // parentNode(input: IPuzzleInput): IPuzzleNode {
-        
-    // }
+    private isForbidenChars(lines: string[]): boolean {
+        // For lines not starting with # : check if any other character than whitespace or digit is present
+       return lines.filter(line => (line[0] !== "#" && /[^\d\s]/g.test(line))).length > 0
+    }
+
+    private isUnexpectedNumbers(puzzle: puzzleArray, size?: number): boolean {
+        const height = puzzle.length
+        // Check if height and width is consistent
+        if (puzzle.filter(p => p.length !== height).length > 0) {
+            return true;
+        }
+        return false;
+    }
 }
