@@ -1,3 +1,5 @@
+import flatten from "lodash/flatten"
+
 enum Direction {
     Up,
     Down,
@@ -46,10 +48,18 @@ export default class NPuzzle {
     }
 
     private isUnexpectedNumbers(puzzle: puzzleArray, size?: number): boolean {
-        const height = puzzle.length
-        // Check if height and width is consistent
-        if (puzzle.filter(p => p.length !== height).length > 0) {
+        const height = puzzle.length;
+        if (puzzle.filter(p => p.length !== height).length > 0) { // Check if height and width is consistent
             return true;
+        }
+        if (size && size !== height) { // Check if given size is the same than number of lines
+            return true;
+        }
+        let counter = height * height;
+        while (--counter >= 0) {
+            if (!flatten(puzzle).includes(counter)) { // Check if all required numbers are in the array
+                return true;
+            }
         }
         return false;
     }
