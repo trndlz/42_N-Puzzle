@@ -16,18 +16,24 @@ export interface IPuzzleInput {
 
 export type puzzleArray = number[][];
 
-export interface IPuzzleNode {
-    values: puzzleArray;
-    f: number;
-    g: number;
-    h: number;
-    parentNode: IPuzzleNode;
-}
+// Link between puzzleArray and coordinates : pArray[y][x] ! Careful !
 
 export interface ICoord {
     x: number;
     y: number;
 }
+
+export interface IPuzzleNode {
+    values: puzzleArray;
+    f: number;
+    g: number;
+    h: number;
+    parentNode?: IPuzzleNode;
+    childrenNode: IPuzzleNode[];
+    zeroPosition: ICoord;
+}
+
+
 
 export default class NPuzzle {
     public input: IPuzzleInput;
@@ -48,12 +54,21 @@ export default class NPuzzle {
         return bb;
     }
 
+    public createNewPuzzle(puzzle: puzzleArray, oldZero: ICoord, newZero: ICoord): puzzleArray {
+        const newPuzzle = puzzle;
+        newPuzzle[oldZero.y][oldZero.x] = puzzle[newZero.y][newZero.x];
+        newPuzzle[newZero.y][newZero.x] = 0;
+        return newPuzzle;
+    }
+
+
+
     public getZeroPosition(puzzle: puzzleArray): ICoord {
         let res: ICoord = {x: -1, y: -1}
         puzzle.forEach((arr, y) => {
             arr.forEach((val, x) => {
                 if (val === 0) {
-                    res = {x: x, y: y}
+                    res = {"x": x, "y": y}
                 }
             })
         })

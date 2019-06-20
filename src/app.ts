@@ -26,16 +26,14 @@ class App {
         const bbb = fs.readFileSync("test1").toString("utf-8");
         // console.log(bbb)
         const ba = test.parseInputString(bbb)
-        const aze = test.getZeroPosition(ba)
-        console.log(aze)
-
-        
-
         console.log(ba)
+        const aze = test.getZeroPosition(ba)
+        const ppp = test.createNewPuzzle(ba, aze, {"x": 1, "y": 1})
+        console.log(ppp)
+        // console.log(aze)
 
         
     }
-
 
     private config(): void {
         this.app.use(cors());
