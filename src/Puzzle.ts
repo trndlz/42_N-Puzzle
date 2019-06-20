@@ -24,13 +24,18 @@ export interface IPuzzleNode {
     parentNode: IPuzzleNode;
 }
 
+export interface ICoord {
+    x: number;
+    y: number;
+}
+
 export default class NPuzzle {
     public input: IPuzzleInput;
     constructor(input: IPuzzleInput) {
         this.input = input;
     }
 
-    public parseInputString(input: string) {
+    public parseInputString(input: string): puzzleArray {
         const lines: string[] = input.split(/\n/);
         if (this.isForbidenChars(lines)) {
             console.log("ALERTE !!!")
@@ -40,7 +45,22 @@ export default class NPuzzle {
         if (this.isUnexpectedNumbers(bb)) {
             console.log("ALERTE !!!")
         }
+        return bb;
     }
+
+    public getZeroPosition(puzzle: puzzleArray): ICoord {
+        let res: ICoord = {x: -1, y: -1}
+        puzzle.forEach((arr, y) => {
+            arr.forEach((val, x) => {
+                if (val === 0) {
+                    res = {x: x, y: y}
+                }
+            })
+        })
+        return res
+    }
+
+
 
     private isForbidenChars(lines: string[]): boolean {
         // For lines not starting with # : check if any other character than whitespace or digit is present

@@ -1,4 +1,6 @@
-export const spiralArray = (n) => {
+import { puzzleArray } from "../Puzzle";
+
+export function spiralArray(n: number): puzzleArray {
     const result = new Array(n);
     for (let p = 0; p < result.length; p++) {
         result[p] = new Array(n);

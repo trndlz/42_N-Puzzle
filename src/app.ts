@@ -25,8 +25,13 @@ class App {
 
         const bbb = fs.readFileSync("test1").toString("utf-8");
         // console.log(bbb)
-        test.parseInputString(bbb)
+        const ba = test.parseInputString(bbb)
+        const aze = test.getZeroPosition(ba)
+        console.log(aze)
 
+        
+
+        console.log(ba)
 
         
     }
