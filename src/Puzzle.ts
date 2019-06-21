@@ -1,4 +1,5 @@
-import {flatten, isEqual, flatMap, cloneDeep} from "lodash";
+import { flatten, isEqual, flatMap, cloneDeep } from "lodash";
+import { spiralArray } from "./components/spiralArray";
 
 export interface IPuzzleInput {
     inputStr: string;
@@ -13,16 +14,16 @@ export interface ICoord {
     y: number;
 }
 
-export interface IPuzzleNode {
+export interface IBoard {
     board: puzzleArray;
     size: number;
     f: number;
     g: number;
     h: number;
-    parentNode?: IPuzzleNode;
-    childrenNode: IPuzzleNode[];
-    zeroPosition: ICoord;
-    toString: string;
+    isTarget: boolean;
+    parentNode?: IBoard;
+    childrenNode?: IBoard[];
+    childrePuzzle: puzzleArray[];
 }
 
 
@@ -37,8 +38,12 @@ export default class NPuzzle {
     ]
 
     public input: IPuzzleInput;
-    constructor(input: IPuzzleInput) {
+    public size: number;
+    public startPuzzle: puzzleArray;
+    constructor(input: IPuzzleInput, size: number) {
         this.input = input;
+        this.size = size;
+        this.startPuzzle = this.parseInputString(input.inputStr)
     }
 
     public parseInputString(input: string): puzzleArray {
@@ -76,10 +81,10 @@ export default class NPuzzle {
         const keyCoord = [];
         puzzle.forEach((arr, y) => {
             arr.forEach((val, x) => {
-                keyCoord[val] = {"x": x, "y": y};
+                keyCoord[val] = { "x": x, "y": y };
             })
         })
-        return keyCoord ;
+        return keyCoord;
     }
 
 
@@ -110,13 +115,13 @@ export default class NPuzzle {
             arr.forEach((val, x) => {
                 if (val !== 0 && val !== target[y][x]) {
                     const targetCoord = targetCoordArr[val]
-                    i += this.manhattanDistance(targetCoord, {"x": x, "y": y});
+                    i += this.manhattanDistance(targetCoord, { "x": x, "y": y });
                 }
             })
         })
         return (i + m);
     }
-    
+
 
     public getNeighboursZero(puzzle: puzzleArray, initZero?: ICoord): ICoord[] {
         const size = puzzle.length;
@@ -141,6 +146,41 @@ export default class NPuzzle {
             })
         })
         return res
+    }
+
+    public getChildrenPuzzles(puzzle: puzzleArray): puzzleArray[] {
+        const zero: ICoord = this.getZeroPosition(puzzle);
+        const nextZeros: ICoord[] = this.getNeighboursZero(puzzle, zero);
+        return nextZeros.map((next) => {
+            return this.swapZeroPosition(puzzle, zero, next)
+        })
+    }
+
+    public createBoard(puzzle: puzzleArray, move: number): IBoard {
+        // board: puzzleArray;
+        // size: number;
+        // f: number;
+        // g: number;
+        // h: number;
+        // parentNode ?: IBoard;
+        // childrenNode: IBoard[];
+        // childrePuzzle: puzzleArray[];
+        // toString: string;
+        const size = puzzle.length;
+        const target = spiralArray(size);
+        const heuristics = this.manhattanPriority(puzzle, target, 0);
+        const moves = move++;
+        const childPuzzles = this.getChildrenPuzzles(puzzle)
+        const board: IBoard = {
+            board: puzzle,
+            size: puzzle.length,
+            f: moves+heuristics,
+            g: move,
+            h: heuristics,
+            isTarget: this.arePuzzlesEqual(puzzle, target),
+            childrePuzzle: childPuzzles
+        }
+        return board;
     }
 
     private isForbidenChars(lines: string[]): boolean {

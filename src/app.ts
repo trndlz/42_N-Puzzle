@@ -11,7 +11,7 @@ class App {
 
     public app: express.Application;
 
-   
+
 
     constructor() {
         this.app = express();
@@ -19,36 +19,25 @@ class App {
         const a = spiralArray(3)
         // console.table(a)
 
-        
+
+        const testPuzzle = fs.readFileSync("test1").toString("utf-8");
         const test = new NPuzzle({
-            inputStr: "1 2 3 4 5 6 7 8 0",
-            heuristics: "manhattan",
+            inputStr: testPuzzle,
+            heuristics: "TEST"
+        }, 5)
+
+        
+        const puzzle = test.startPuzzle;
+        const initBoard = test.createBoard(puzzle, 0);
+        console.table(puzzle)
+        console.log(initBoard.h)
+        initBoard.childrePuzzle.forEach(a => {
+            const secBoard = test.createBoard(a, 1)
+            console.table(a);
+            console.log(secBoard.h)
         })
-
-        const bbb = fs.readFileSync("test1").toString("utf-8");
-        const cb = test.parseInputString(bbb)
-        // console.log(ba)
-        // console.table(cb)
-        const neighbZ = test.getNeighboursZero(cb);
-        const z = test.getZeroPosition(cb)
-        // console.table(neighbZ)
-        neighbZ.map((coord) => {
-            // console.table(cb)
-            const newW = test.swapZeroPosition(cb, z, coord)
-            console.table(newW)
-            console.log(test.manhattanPriority(newW, a, 0))
-        })
-        
-        console.log(test.manhattanPriority(cb, a, 0))
-        // console.log(cb)
-
-
-        
-
-        // console.log(aze)
-
-        
-    }  
+        // console.table(initBoard.childrePuzzle)
+    }
 
     private config(): void {
         this.app.use(cors());
