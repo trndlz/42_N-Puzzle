@@ -16,7 +16,8 @@ class App {
     constructor() {
         this.app = express();
         this.config();
-        const a = spiralArray(4)
+        const a = spiralArray(3)
+        // console.table(a)
 
         
         const test = new NPuzzle({
@@ -25,16 +26,18 @@ class App {
         })
 
         const bbb = fs.readFileSync("test1").toString("utf-8");
-        const ccc = fs.readFileSync("test2").toString("utf-8");
-        // console.log(bbb)
-        const ba = test.parseInputString(bbb)
-        const cb = test.parseInputString(ccc)
+        const cb = test.parseInputString(bbb)
         // console.log(ba)
-        // console.log(test.getNeighboursZero(ba))
+        console.table(cb)
+        const z = test.getNeighboursZero(cb);
+        console.table(z)
+        z.map((coord) => {
+            const newW = test.swapZeroPosition(cb, test.getZeroPosition(cb), coord)
+            console.table(newW)
+        })
+        
+        console.log(test.manhattanPriority(cb, a, 0))
         // console.log(cb)
-        // console.log(test.getNeighboursZero(cb))
-        console.log(test.hammingPriority(ba, cb, 0))
-        console.log(test.manhattanPriority(ba, cb, 0))
 
 
         

@@ -1,6 +1,4 @@
-import flatten from "lodash/flatten";
-import isEqual from "lodash/isEqual";
-import flatMap from "lodash/flatMap"
+import {flatten, isEqual, flatMap} from "lodash";
 
 export interface IPuzzleInput {
     inputStr: string;
@@ -10,25 +8,34 @@ export interface IPuzzleInput {
 export type puzzleArray = number[][];
 
 // Link between puzzleArray and coordinates : pArray[y][x] ! Careful !
-
 export interface ICoord {
     x: number;
     y: number;
 }
 
 export interface IPuzzleNode {
-    values: puzzleArray;
+    board: puzzleArray;
+    size: number;
     f: number;
     g: number;
     h: number;
     parentNode?: IPuzzleNode;
     childrenNode: IPuzzleNode[];
     zeroPosition: ICoord;
+    toString: string;
 }
 
 
 
 export default class NPuzzle {
+
+    public possibleMoves: ICoord[] = [
+        { "x": 0, "y": 1 }, // Right
+        { "x": -1, "y": 0 }, // Down
+        { "x": 0, "y": -1 }, // Left
+        { "x": 1, "y": 0 }, // Up
+    ]
+
     public input: IPuzzleInput;
     constructor(input: IPuzzleInput) {
         this.input = input;
@@ -47,7 +54,7 @@ export default class NPuzzle {
         return bb;
     }
 
-    public createNewPuzzle(puzzle: puzzleArray, oldZero: ICoord, newZero: ICoord): puzzleArray {
+    public swapZeroPosition(puzzle: puzzleArray, oldZero: ICoord, newZero: ICoord): puzzleArray {
         const newPuzzle = puzzle;
         newPuzzle[oldZero.y][oldZero.x] = puzzle[newZero.y][newZero.x];
         newPuzzle[newZero.y][newZero.x] = 0;
@@ -112,17 +119,10 @@ export default class NPuzzle {
     
 
     public getNeighboursZero(puzzle: puzzleArray, initZero?: ICoord): ICoord[] {
-        const possibleMoves: ICoord[] = [
-            { "x": 0, "y": 1 }, // Right
-            { "x": -1, "y": 0 }, // Down
-            { "x": 0, "y": -1 }, // Left
-            { "x": 1, "y": 0 }, // Up
-        ]
-
         const size = puzzle.length;
         const neighbours = [];
-        const zero = initZero ? initZero : this.getZeroPosition(puzzle);
-        possibleMoves.forEach((dir) => {
+        const zero = initZero || this.getZeroPosition(puzzle);
+        this.possibleMoves.forEach((dir) => {
             const testCoord = this.addCoord(zero, dir);
             if (testCoord.x >= 0 && testCoord.x < (size - 1) && testCoord.y >= 0 && testCoord.y < (size - 1)) {
                 neighbours.push(testCoord)
