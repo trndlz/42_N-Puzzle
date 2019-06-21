@@ -28,12 +28,15 @@ class App {
         const bbb = fs.readFileSync("test1").toString("utf-8");
         const cb = test.parseInputString(bbb)
         // console.log(ba)
-        console.table(cb)
-        const z = test.getNeighboursZero(cb);
-        console.table(z)
-        z.map((coord) => {
-            const newW = test.swapZeroPosition(cb, test.getZeroPosition(cb), coord)
+        // console.table(cb)
+        const neighbZ = test.getNeighboursZero(cb);
+        const z = test.getZeroPosition(cb)
+        // console.table(neighbZ)
+        neighbZ.map((coord) => {
+            // console.table(cb)
+            const newW = test.swapZeroPosition(cb, z, coord)
             console.table(newW)
+            console.log(test.manhattanPriority(newW, a, 0))
         })
         
         console.log(test.manhattanPriority(cb, a, 0))

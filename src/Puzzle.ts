@@ -1,4 +1,4 @@
-import {flatten, isEqual, flatMap} from "lodash";
+import {flatten, isEqual, flatMap, cloneDeep} from "lodash";
 
 export interface IPuzzleInput {
     inputStr: string;
@@ -55,7 +55,7 @@ export default class NPuzzle {
     }
 
     public swapZeroPosition(puzzle: puzzleArray, oldZero: ICoord, newZero: ICoord): puzzleArray {
-        const newPuzzle = puzzle;
+        const newPuzzle = cloneDeep(puzzle);
         newPuzzle[oldZero.y][oldZero.x] = puzzle[newZero.y][newZero.x];
         newPuzzle[newZero.y][newZero.x] = 0;
         return newPuzzle;
