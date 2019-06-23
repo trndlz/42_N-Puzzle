@@ -4,7 +4,7 @@ import cors from "cors";
 import express from "express";
 import routes from "./routes";
 import { spiralArray } from "./components/spiralArray";
-import NPuzzle, { puzzleArray } from "./Puzzle";
+import NPuzzle from "./Puzzle";
 import fs from "fs";
 
 class App {
@@ -31,9 +31,9 @@ class App {
         const initBoard = test.createBoard(puzzle, 0);
         console.table(puzzle)
         console.log(initBoard.h)
-        initBoard.childrePuzzle.forEach(a => {
-            const secBoard = test.createBoard(a, 1)
-            console.table(a);
+        initBoard.childrePuzzle.forEach(b => {
+            const secBoard = test.createBoard(b, 1)
+            console.table(b);
             console.log(secBoard.h)
         })
         // console.table(initBoard.childrePuzzle)

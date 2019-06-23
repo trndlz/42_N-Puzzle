@@ -1,4 +1,4 @@
-import { puzzleArray } from "../Puzzle";
+import { puzzleArray } from "../Types";
 
 export function spiralArray(n: number): puzzleArray {
     const result = new Array(n);

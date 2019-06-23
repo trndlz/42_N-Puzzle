@@ -1,32 +1,7 @@
 import { flatten, isEqual, flatMap, cloneDeep } from "lodash";
 import { spiralArray } from "./components/spiralArray";
-
-export interface IPuzzleInput {
-    inputStr: string;
-    heuristics: string;
-}
-
-export type puzzleArray = number[][];
-
-// Link between puzzleArray and coordinates : pArray[y][x] ! Careful !
-export interface ICoord {
-    x: number;
-    y: number;
-}
-
-export interface IBoard {
-    board: puzzleArray;
-    size: number;
-    f: number;
-    g: number;
-    h: number;
-    isTarget: boolean;
-    parentNode?: IBoard;
-    childrenNode?: IBoard[];
-    childrePuzzle: puzzleArray[];
-}
-
-
+import { ICoord, IParsedData, puzzleArray, IBoard } from "./Types";
+import { parseInputString } from "./Parser";
 
 export default class NPuzzle {
 
@@ -37,27 +12,16 @@ export default class NPuzzle {
         { "x": 1, "y": 0 }, // Up
     ]
 
-    public input: IPuzzleInput;
+    public input: IParsedData;
     public size: number;
     public startPuzzle: puzzleArray;
-    constructor(input: IPuzzleInput, size: number) {
+    constructor(input: IParsedData, size: number) {
         this.input = input;
         this.size = size;
-        this.startPuzzle = this.parseInputString(input.inputStr)
+        this.startPuzzle = parseInputString(input.inputStr)
     }
 
-    public parseInputString(input: string): puzzleArray {
-        const lines: string[] = input.split(/\n/);
-        if (this.isForbidenChars(lines)) {
-            console.log("ALERTE !!!")
-        }
-        const pp: string[][] = lines.map(line => line.match(/[\d]+/g)).filter(Boolean).map((value, index, array) => value)
-        const bb: puzzleArray = pp.map(a => a.map(b => parseInt(b, 10))).filter(a => a.length !== 1)
-        if (this.isUnexpectedNumbers(bb)) {
-            console.log("ALERTE !!!")
-        }
-        return bb;
-    }
+    
 
     public swapZeroPosition(puzzle: puzzleArray, oldZero: ICoord, newZero: ICoord): puzzleArray {
         const newPuzzle = cloneDeep(puzzle);
@@ -157,15 +121,6 @@ export default class NPuzzle {
     }
 
     public createBoard(puzzle: puzzleArray, move: number): IBoard {
-        // board: puzzleArray;
-        // size: number;
-        // f: number;
-        // g: number;
-        // h: number;
-        // parentNode ?: IBoard;
-        // childrenNode: IBoard[];
-        // childrePuzzle: puzzleArray[];
-        // toString: string;
         const size = puzzle.length;
         const target = spiralArray(size);
         const heuristics = this.manhattanPriority(puzzle, target, 0);
@@ -183,25 +138,5 @@ export default class NPuzzle {
         return board;
     }
 
-    private isForbidenChars(lines: string[]): boolean {
-        // For lines not starting with # : check if any other character than whitespace or digit is present
-        return lines.filter(line => (line[0] !== "#" && /[^\d\s]/g.test(line))).length > 0
-    }
-
-    private isUnexpectedNumbers(puzzle: puzzleArray, size?: number): boolean {
-        const height = puzzle.length;
-        if (puzzle.filter(p => p.length !== height).length > 0) { // Check if height and width is consistent
-            return true;
-        }
-        if (size && size !== height) { // Check if given size is the same than number of lines
-            return true;
-        }
-        let counter = height * height;
-        while (--counter >= 0) {
-            if (!flatten(puzzle).includes(counter)) { // Check if all required numbers are in the array
-                return true;
-            }
-        }
-        return false;
-    }
+    
 }
