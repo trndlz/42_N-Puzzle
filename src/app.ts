@@ -21,21 +21,21 @@ class App {
 
 
         const testPuzzle = fs.readFileSync("test1").toString("utf-8");
-        const test = new NPuzzle({
-            inputStr: testPuzzle,
-            heuristics: "TEST"
-        }, 5)
+        // const test = new NPuzzle({
+        //     inputStr: testPuzzle,
+        //     heuristics: "TEST"
+        // }, 5)
 
         
-        const puzzle = test.startPuzzle;
-        const initBoard = test.createNode(puzzle, 0);
-        console.table(puzzle)
-        console.log(initBoard.h)
-        initBoard.childrePuzzle.forEach(b => {
-            const secBoard = test.createNode(b, 1)
-            console.table(b);
-            console.log(secBoard.h)
-        })
+        // const puzzle = test.startPuzzle;
+        // const initBoard = test.createNode(puzzle, 0);
+        // console.table(puzzle)
+        // console.log(initBoard.h)
+        // initBoard.childrePuzzle.forEach(b => {
+        //     const secBoard = test.createNode(b, 1)
+        //     console.table(b);
+        //     console.log(secBoard.h)
+        // })
         // console.table(initBoard.childrePuzzle)
     }
 

@@ -12,14 +12,12 @@ export default class NPuzzle {
         { "x": 1, "y": 0 }, // Up
     ]
 
-    public input: IParsedData;
-    public size: number;
-    public startPuzzle: board;
-    constructor(input: IParsedData, size: number) {
-        this.input = input;
-        this.size = size;
-        this.startPuzzle = parseInputString(input.inputStr)
-    } 
+    public node: INode;
+    public previousNode?: INode;
+    
+    constructor(puzzle: board, previousNode?: board) {
+        this.node = this.createNode(puzzle, 0)
+    }
 
     // Hamming priority function.
     // The number of blocks in the wrong position + number of moves made so far
