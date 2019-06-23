@@ -22,4 +22,5 @@ export interface INode {
     parentNode?: INode;
     childrenNode?: INode[];
     childrePuzzle: board[];
+    open: boolean;
 }
