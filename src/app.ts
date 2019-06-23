@@ -28,11 +28,11 @@ class App {
 
         
         const puzzle = test.startPuzzle;
-        const initBoard = test.createBoard(puzzle, 0);
+        const initBoard = test.createNode(puzzle, 0);
         console.table(puzzle)
         console.log(initBoard.h)
         initBoard.childrePuzzle.forEach(b => {
-            const secBoard = test.createBoard(b, 1)
+            const secBoard = test.createNode(b, 1)
             console.table(b);
             console.log(secBoard.h)
         })

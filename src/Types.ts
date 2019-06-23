@@ -4,22 +4,22 @@ export interface IParsedData {
     heuristics: string;
 }
 
-export type puzzleArray = number[][];
+export type board = number[][];
 
-// Link between puzzleArray and coordinates : pArray[y][x] ! Careful !
+// Link between board and coordinates : pArray[y][x] ! Careful !
 export interface ICoord {
     x: number;
     y: number;
 }
 
-export interface IBoard {
-    board: puzzleArray;
+export interface INode {
+    board: board;
     size: number;
     f: number;
     g: number;
     h: number;
     isTarget: boolean;
-    parentNode?: IBoard;
-    childrenNode?: IBoard[];
-    childrePuzzle: puzzleArray[];
+    parentNode?: INode;
+    childrenNode?: INode[];
+    childrePuzzle: board[];
 }

@@ -1,7 +1,7 @@
-import { flatten, isEqual, flatMap, cloneDeep } from "lodash";
 import { spiralArray } from "./components/spiralArray";
-import { ICoord, IParsedData, puzzleArray, IBoard } from "./Types";
+import { ICoord, IParsedData, board, INode } from "./Types";
 import { parseInputString } from "./Parser";
+import { addCoord, boardToICoordArr, arePuzzlesEqual, swapZeroPosition } from "./Helpers";
 
 export default class NPuzzle {
 
@@ -14,47 +14,16 @@ export default class NPuzzle {
 
     public input: IParsedData;
     public size: number;
-    public startPuzzle: puzzleArray;
+    public startPuzzle: board;
     constructor(input: IParsedData, size: number) {
         this.input = input;
         this.size = size;
         this.startPuzzle = parseInputString(input.inputStr)
-    }
-
-    
-
-    public swapZeroPosition(puzzle: puzzleArray, oldZero: ICoord, newZero: ICoord): puzzleArray {
-        const newPuzzle = cloneDeep(puzzle);
-        newPuzzle[oldZero.y][oldZero.x] = puzzle[newZero.y][newZero.x];
-        newPuzzle[newZero.y][newZero.x] = 0;
-        return newPuzzle;
-    }
-
-    public addCoord(a: ICoord, b: ICoord): ICoord {
-        return {
-            "x": a.x + b.x,
-            "y": a.y + b.y
-        }
-    }
-
-    public arePuzzlesEqual(a: puzzleArray, b: puzzleArray): boolean {
-        return isEqual(a, b);
-    }
-
-    public nArrayToKeyCoord(puzzle: puzzleArray) {
-        const keyCoord = [];
-        puzzle.forEach((arr, y) => {
-            arr.forEach((val, x) => {
-                keyCoord[val] = { "x": x, "y": y };
-            })
-        })
-        return keyCoord;
-    }
-
+    } 
 
     // Hamming priority function.
     // The number of blocks in the wrong position + number of moves made so far
-    public hammingPriority(current: puzzleArray, target: puzzleArray, m: number): number {
+    public hammingPriority(current: board, target: board, m: number): number {
         let i = 0;
         current.forEach((arr, y) => {
             arr.forEach((val, x) => {
@@ -72,9 +41,9 @@ export default class NPuzzle {
 
     // Manhattan priority function
     // The sum of the Manhattan distances + number of moves made so far
-    public manhattanPriority(current: puzzleArray, target: puzzleArray, m: number): number {
+    public manhattanPriority(current: board, target: board, m: number): number {
         let i = 0;
-        const targetCoordArr = this.nArrayToKeyCoord(target);
+        const targetCoordArr = boardToICoordArr(target);
         current.forEach((arr, y) => {
             arr.forEach((val, x) => {
                 if (val !== 0 && val !== target[y][x]) {
@@ -87,12 +56,12 @@ export default class NPuzzle {
     }
 
 
-    public getNeighboursZero(puzzle: puzzleArray, initZero?: ICoord): ICoord[] {
+    public getNeighboursZero(puzzle: board, initZero?: ICoord): ICoord[] {
         const size = puzzle.length;
         const neighbours = [];
         const zero = initZero || this.getZeroPosition(puzzle);
         this.possibleMoves.forEach((dir) => {
-            const testCoord = this.addCoord(zero, dir);
+            const testCoord = addCoord(zero, dir);
             if (testCoord.x >= 0 && testCoord.x < (size - 1) && testCoord.y >= 0 && testCoord.y < (size - 1)) {
                 neighbours.push(testCoord)
             }
@@ -100,7 +69,7 @@ export default class NPuzzle {
         return neighbours;
     }
 
-    public getZeroPosition(puzzle: puzzleArray): ICoord {
+    public getZeroPosition(puzzle: board): ICoord {
         let res: ICoord = { x: -1, y: -1 }
         puzzle.forEach((arr, y) => {
             arr.forEach((val, x) => {
@@ -112,31 +81,30 @@ export default class NPuzzle {
         return res
     }
 
-    public getChildrenPuzzles(puzzle: puzzleArray): puzzleArray[] {
+    // Returns array of puzzles 
+    public getChildrenPuzzles(puzzle: board): board[] {
         const zero: ICoord = this.getZeroPosition(puzzle);
         const nextZeros: ICoord[] = this.getNeighboursZero(puzzle, zero);
         return nextZeros.map((next) => {
-            return this.swapZeroPosition(puzzle, zero, next)
+            return swapZeroPosition(puzzle, zero, next)
         })
     }
 
-    public createBoard(puzzle: puzzleArray, move: number): IBoard {
+    public createNode(puzzle: board, move: number): INode {
         const size = puzzle.length;
         const target = spiralArray(size);
         const heuristics = this.manhattanPriority(puzzle, target, 0);
         const moves = move++;
         const childPuzzles = this.getChildrenPuzzles(puzzle)
-        const board: IBoard = {
+        const node: INode = {
             board: puzzle,
             size: puzzle.length,
             f: moves+heuristics,
             g: move,
             h: heuristics,
-            isTarget: this.arePuzzlesEqual(puzzle, target),
+            isTarget: arePuzzlesEqual(puzzle, target),
             childrePuzzle: childPuzzles
         }
-        return board;
+        return node;
     }
-
-    
 }
