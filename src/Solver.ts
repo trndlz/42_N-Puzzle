@@ -58,8 +58,8 @@ export default class Solver {
         return remove(set, (a => isEqual(c, a)));
     }
 
-    public boardWithLowestHeuristic(set: NBoard[]): NBoard {
-        return set.sort((a, b) => a.heuristics - b.heuristics)[0];
+    public boardWithLowestScore(set: NBoard[]): NBoard {
+        return set.sort((a, b) => a.score - b.score)[0];
     }
 
     public printColoredDiff(target: board, current: board): string {
@@ -81,21 +81,23 @@ export default class Solver {
 
     public aStar() {
         let hoho = false;
-        // let i = 0;
+        let i = 0;
         const openSet: NBoard[] = [];
         const closedSet: NBoard[] = [];
         
+
         const init = new NBoard(this.startPuzzle, this.targetPuzzle, 0);
         openSet.push(init);
         console.log(chalk.magentaBright(`Target:\t`) + this.targetPuzzle)
         console.log(chalk.blue(`Round : ${0}`))
         while (openSet.length > 0) {
-            const current = this.boardWithLowestHeuristic(openSet)
+            i++;
+            const current = this.boardWithLowestScore(openSet)
             closedSet.push(current);
             remove(openSet, current);
             console.log(chalk.blue.inverse(`Round : ${current.moves + 1}`))
             const children = current.childrenPuzzles.map(element => {
-                return new NBoard(element, this.targetPuzzle, current.moves + 1)
+                return new NBoard(element, this.targetPuzzle, current.moves + 1, current)
             });
             children.forEach((b) => {
                 if (b.isTarget) {
@@ -105,41 +107,16 @@ export default class Solver {
                     return closedSet;
                 }
                 else if (this.isBoardInClosedSet(closedSet, b)) {
-                    console.log(chalk.gray(b.currentPuzzle.toString()) + " score : " + b.heuristics)
+                    console.log(chalk.gray(b.currentPuzzle.toString()) + " score : " + b.score)
                 }
                 else {
-                    console.log(this.printColoredDiff(this.targetPuzzle, b.currentPuzzle) + " score : " + b.heuristics)
+                    console.log(this.printColoredDiff(this.targetPuzzle, b.currentPuzzle) + " score : " + b.score)
                     openSet.push(b)
                 }
             })
-            // console.log()
             if (hoho) {
-                // console.log("OPEN SET");
-                // openSet.forEach(a => {
-                //     console.log(a.currentPuzzle)
-                // })
                 return closedSet ;
             }
         }
-
-        console.log(openSet.length)
-        
-        // children.forEach(a => {
-        //     // console.table(a.currentPuzzle)
-        //     // console.log("heuristics", a.heuristics)
-        //     // console.log("moves", a.moves)
-        // })
-        // solver.push(children[0])
-        // console.log(children[0].currentPuzzle)
-        // console.log(children[0].childrenPuzzles)
-        // const children1 = children[0].childrenPuzzles.map(ttt => {
-        //     return new NBoard(ttt, this.targetPuzzle, 2)
-        // });
-        // children1.sort((a, b) => a.heuristics - b.heuristics)
-        // children1.forEach(a => {
-        //     console.table(a.currentPuzzle)
-        //     console.log("heuristics", a.heuristics)
-        //     console.log("moves", a.moves)
-        // })
     }
 }

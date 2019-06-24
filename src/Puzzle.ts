@@ -22,10 +22,12 @@ export default class NBoard {
     public zeroPosition: ICoord;
     public nextZeroPositions: ICoord[];
     public heuristics: number;
+    public score: number;
     public moves: number;
     public size: number;
+    public parent: NBoard;
   
-    constructor(current: board, target: board, move: number) {
+    constructor(current: board, target: board, move: number, parent?: NBoard) {
         this.currentPuzzle = current;
         this.targetPuzzle = target;
         this.size = current.length;
@@ -33,8 +35,10 @@ export default class NBoard {
         this.zeroPosition = this.getZeroPosition(current);
         this.nextZeroPositions = this.getNeighboursZero();
         this.heuristics = this.manhattanPriority();
+        this.score = this.heuristics + this.moves;
         this.childrenPuzzles = this.getChildrenPuzzles();
-        this.isTarget = isEqual(current, target)
+        this.isTarget = isEqual(current, target);
+        this.parent = parent;
     }
 
     // Hamming priority function.
