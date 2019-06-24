@@ -33,7 +33,8 @@ export default class NBoard {
         this.zeroPosition = this.getZeroPosition(current);
         this.nextZeroPositions = this.getNeighboursZero();
         this.heuristics = this.manhattanPriority();
-        this.childrenPuzzles = this.getChildrenPuzzles()
+        this.childrenPuzzles = this.getChildrenPuzzles();
+        this.isTarget = isEqual(current, target)
     }
 
     // Hamming priority function.

@@ -45,6 +45,6 @@ export const parseInputString = (input: string) => {
     const bb: board = pp.map(a => a.map(b => parseInt(b, 10))).filter(a => a.length !== 1)
     if (isInputDataConsistent(bb)) {
         console.log("ALERTE !!!")
-    }
+    }   
     return bb;
 }
