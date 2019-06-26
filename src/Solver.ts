@@ -1,7 +1,7 @@
 import { parseInputString } from "./Parser";
 import { IParsedData, board, INode } from "./Types";
 import { spiralArray } from "./components/spiralArray";
-import { isEqual, remove } from "lodash";
+import { isEqual, remove, flatten } from "lodash";
 import NBoard from "./Puzzle";
 import chalk from "chalk"
 

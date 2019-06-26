@@ -36,6 +36,7 @@ const isInputDataConsistent = (puzzle: board, size?: number) => {
     return false;
 }
 
+// Convert input string to board (type: board)
 export const parseInputString = (input: string) => {
     const lines: string[] = input.split(/\n/);
     if (areForbiddenChars(lines)) {
@@ -47,4 +48,28 @@ export const parseInputString = (input: string) => {
         console.log("ALERTE !!!")
     }      
     return bb;
+}
+
+export const isBoardSolvable = (target: board, current: board) => {
+    const target1D = flatten(target);
+    const current1D = flatten(current);
+    let currentInv = countInversions(current1D);
+    let targetInv = countInversions(target1D);
+    if (current.length % 2 === 0) {
+        currentInv += Math.floor(current1D.indexOf(0) / current.length);
+        targetInv += Math.floor(target1D.indexOf(0) / target.length);
+    }
+    return (currentInv % 2 === targetInv % 2)
+}
+
+const countInversions = (p: number[]) => {
+    let inversions = 0;
+    for (let a = 0; a < p.length - 1; a++) {
+        for (let b = a + 1; b < p.length; b++) {
+            if (p[b] && p[a] && p[a] > p[b]) {
+                inversions++;
+            }
+        }
+    }
+    return inversions
 }

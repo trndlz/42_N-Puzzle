@@ -7,24 +7,22 @@ import { spiralArray } from "./components/spiralArray";
 import NPuzzle from "./Puzzle";
 import fs from "fs";
 import Solver from "./Solver";
+import { parseInputString, isBoardSolvable } from "./Parser";
 
 class App {
 
     public app: express.Application;
 
-
-
     constructor() {
         this.app = express();
         this.config();
-        const a = spiralArray(3)
-        // console.table(a)
-
-
-        const testPuzzle = fs.readFileSync("test1").toString("utf-8");
+        const dim = 3;
+        const a = spiralArray(dim)
+        const testPuzzle = fs.readFileSync("puzzlesInput/solvable/3-size3").toString("utf-8");
+        const puzzle = parseInputString(testPuzzle);
         const solver = new Solver({
             inputStr: testPuzzle,
-            heuristics: "BLQBLQ"
+            heuristics: "manhattan"
         })
         solver.aStar()
     }
@@ -33,7 +31,7 @@ class App {
         this.app.use(cors());
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: false }));
-        this.app.use("/api/v1", routes);
+        this.app.use("gi/api/v1", routes);
     }
 }
 
