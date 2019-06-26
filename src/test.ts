@@ -22,7 +22,7 @@ class Test {
                 solvability.forEach((s) => {
                     const testPuzzle = fs.readFileSync(s.path+p+"-size"+d).toString("utf-8");
                     const puzzle = parseInputString(testPuzzle);
-                    const isSolvable = isBoardSolvable(target, puzzle)
+                    const isSolvable = isBoardSolvable(target, puzzle.board)
                     if (s.solvable === isSolvable) {
                         console.log("dim", d, "puzzle", p, "solvable", s.solvable, "OK")
                     } else {

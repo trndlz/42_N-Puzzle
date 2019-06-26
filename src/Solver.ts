@@ -27,13 +27,13 @@ export default class Solver {
     public moves: number;
     public solver: ISolver;
     public initialNode: INode;
+    public hasError: string[];
     
     constructor(input: IParsedData) {
-
         const puzzle = parseInputString(input.inputStr);
-        const puzzleSize = puzzle.length;
-        
-        this.startPuzzle = puzzle;
+        const puzzleSize = puzzle.board.length;
+        this.hasError = puzzle.error;
+        this.startPuzzle = puzzle.board;
         this.targetPuzzle = spiralArray(puzzleSize);
         this.size = puzzleSize;
         this.heuristics = "manhattan";

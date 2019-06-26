@@ -1,5 +1,6 @@
 import { board } from "./Types";
 import { flatten } from "lodash";
+import { spiralArray } from "./components/spiralArray";
 
 // For lines not starting with # : check if any other character than whitespace or digit is present
 const areForbiddenChars = (lines: string[]) => {
@@ -34,20 +35,25 @@ const isInputDataConsistent = (puzzle: board, size?: number) => {
         return true;
     }
     return false;
+    
 }
 
 // Convert input string to board (type: board)
 export const parseInputString = (input: string) => {
+    const errors = [];
     const lines: string[] = input.split(/\n/);
     if (areForbiddenChars(lines)) {
-        console.log("ALERTE !!!")
+        errors.push("- Forbidden chars in the input");
     }
-    const pp: string[][] = lines.map(line => line.match(/[\d]+/g)).filter(Boolean).map((value, index, array) => value)
-    const bb: board = pp.map(a => a.map(b => parseInt(b, 10))).filter(a => a.length !== 1)
-    if (isInputDataConsistent(bb)) {
-        console.log("ALERTE !!!")
-    }      
-    return bb;
+    const stringBoard: string[][] = lines.map(line => line.match(/[\d]+/g)).filter(Boolean).map((value, index, array) => value)
+    const boardInput: board = stringBoard.map(a => a.map(b => parseInt(b, 10))).filter(a => a.length !== 1)
+    if (isInputDataConsistent(boardInput)) {
+        errors.push("- Input data is inconsistent.");
+    }
+    if (!isBoardSolvable(spiralArray(boardInput.length), boardInput)) {
+        errors.push("- Puzzle is not solvable");
+    }
+    return { "board": boardInput, "error": errors };
 }
 
 export const isBoardSolvable = (target: board, current: board) => {
