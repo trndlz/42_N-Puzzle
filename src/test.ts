@@ -9,11 +9,11 @@ class Test {
         const dimensions = range(3, 7);
         const puzzlesPerDim = range(1, 30);
         const solvability = [{
-            path: "puzzlesInput/solvable/",
+            path: "generatePuzzlesInput/solvable/",
             solvable: true
         },
         {
-            path: "puzzlesInput/unsolvable/",
+            path: "generatePuzzlesInput/unsolvable/",
             solvable: false
         }];
         dimensions.forEach(d => {

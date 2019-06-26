@@ -18,7 +18,7 @@ class App {
         this.config();
         const dim = 3;
         const a = spiralArray(dim)
-        const testPuzzle = fs.readFileSync("puzzlesInput/solvable/3-size3").toString("utf-8");
+        const testPuzzle = fs.readFileSync("generatePuzzlesInput/solvable/3-size3").toString("utf-8");
         const puzzle = parseInputString(testPuzzle);
         const solver = new Solver({
             inputStr: testPuzzle,
