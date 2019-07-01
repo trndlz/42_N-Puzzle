@@ -11,7 +11,7 @@ export class Board extends React.Component {
     render() {
         const { size } = this.state;
         const array = this.props.input;
-        const sizeArray = [...Array(size).keys()]
+        const sizeArray = [...Array(this.state.size).keys()]
         return (
             <div className="grid">
                 {sizeArray.map((v) => 

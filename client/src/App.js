@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import { Layout, Menu, Icon } from 'antd';
 import { Board } from './Board';
+import { NPuzzle } from './NPuzzle';
 
 const { Content, Footer } = Layout;
 
@@ -11,7 +12,6 @@ class App extends Component {
   };
 
   handleClick = e => {
-    console.log('click ', e);
     this.setState({
       current: e.key,
     });
@@ -33,9 +33,9 @@ class App extends Component {
         </Menu.Item>
           </Menu>
           <Content style={{ padding: '5vw' }}>
-              <Board input={[1, 2, 3, 5, 5, 5, 7, 8, 0]} />
+              <NPuzzle />
           </Content>
-          <Footer style={{ textAlign: 'center' }}>© 2018</Footer>
+          <Footer style={{ textAlign: 'center' }}>© 2019</Footer>
         </Layout>
 
       </div>

@@ -3,8 +3,6 @@ import * as bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
 import routes from "./routes";
-import fs from "fs";
-import Solver from "./Solver";
 
 class App {
 
