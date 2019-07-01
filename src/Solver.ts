@@ -1,9 +1,10 @@
 import { parseInputString } from "./Parser";
 import { IParsedData, board, INode } from "./Types";
 import { spiralArray } from "./components/spiralArray";
-import { isEqual, remove, flatten } from "lodash";
+import { isEqual, remove, flatten, deepClone } from "lodash";
 import NBoard from "./Puzzle";
 import chalk from "chalk"
+import PriorityQueue from "./PriorityQueue"
 
 interface ISolver {
     solutionPath: INode[];
@@ -21,30 +22,28 @@ interface IPuzzleTree {
 export default class Solver {
 
     public size: number;
-    public startPuzzle: board;
+    public startBoard: board;
+    public currentPuzzle: NBoard;
     public heuristics: string;
-    public targetPuzzle: board;
+    public targetBoard: board;
     public moves: number;
     public solver: ISolver;
     public initialNode: INode;
     public hasError: string[];
+    public solutionPath: NBoard[];
     
     constructor(input: IParsedData) {
         const puzzle = parseInputString(input.inputStr);
         const puzzleSize = puzzle.board.length;
         this.hasError = puzzle.error;
-        this.startPuzzle = puzzle.board;
-        this.targetPuzzle = spiralArray(puzzleSize);
+        this.startBoard = puzzle.board;
+        this.targetBoard = spiralArray(puzzleSize);
         this.size = puzzleSize;
         this.heuristics = "manhattan";
-        this.solver = {
-            solutionPath: [],
-            moves: 0,
-            queue: []
-        }
+        this.solutionPath = [];
     }
 
-    public isBoardInClosedSet(set: NBoard[], b: NBoard): boolean {
+    public isBoardInASet(set: NBoard[], b: NBoard): boolean {
         let test = false;
         set.forEach((i) => {
             if (isEqual(i.currentPuzzle, b.currentPuzzle)) {
@@ -79,44 +78,41 @@ export default class Solver {
         return res ;
     }
 
-    public aStar() {
-        let hoho = false;
-        let i = 0;
-        const openSet: NBoard[] = [];
-        const closedSet: NBoard[] = [];
-        
+    public buildHistory(curr: NBoard) {
+        while (curr) {
+            this.solutionPath.unshift(curr);
+            curr = curr.parent;
+        }
+    }
 
-        const init = new NBoard(this.startPuzzle, this.targetPuzzle, 0);
-        openSet.push(init);
-        console.log(chalk.magentaBright(`Target:\t`) + this.targetPuzzle)
-        console.log(chalk.blue(`Round : ${0}`))
-        while (openSet.length > 0) {
-            i++;
-            const current = this.boardWithLowestScore(openSet)
-            closedSet.push(current);
-            remove(openSet, current);
-            console.log(chalk.blue.inverse(`Round : ${current.moves + 1}`))
-            const children = current.childrenPuzzles.map(element => {
-                return new NBoard(element, this.targetPuzzle, current.moves + 1, current)
+    public aStar() {
+        let isSolutionFound = false;
+        let counter = 0;
+        const closedSet: NBoard[] = [];
+        const init = new NBoard(this.startBoard, this.targetBoard, 0);
+        const openQueue = new PriorityQueue();
+        openQueue.enqueue(init);
+        while (!isSolutionFound && counter < 40000) {
+            counter++;
+            this.currentPuzzle = openQueue.dequeue();
+            closedSet.push(this.currentPuzzle);
+            const children = this.currentPuzzle.childrenPuzzles.map(element => {
+                return new NBoard(element, this.targetBoard, this.currentPuzzle.moves + 1, this.currentPuzzle)
             });
-            children.forEach((b) => {
-                if (b.isTarget) {
-                    console.log(this.printColoredDiff(this.targetPuzzle, b.currentPuzzle))
-                    hoho = true;
-                    closedSet.push(b)
-                    return closedSet;
+            children.forEach((child) => {
+                if (child.isTarget) {
+                    isSolutionFound = true;
+                    closedSet.push(child)
+                    this.buildHistory(child);
                 }
-                else if (this.isBoardInClosedSet(closedSet, b)) {
-                    console.log(chalk.gray(b.currentPuzzle.toString()) + " score : " + b.score)
+                // To be improved with a nice searching algo
+                else if (this.isBoardInASet(closedSet, child)) {
+                    // Nothing to do !
                 }
                 else {
-                    console.log(this.printColoredDiff(this.targetPuzzle, b.currentPuzzle) + " score : " + b.score)
-                    openSet.push(b)
+                    openQueue.enqueue(child);
                 }
             })
-            if (hoho) {
-                return closedSet ;
-            }
         }
     }
 }

@@ -26,7 +26,7 @@ export default class NBoard {
     public moves: number;
     public size: number;
     public parent: NBoard;
-  
+
     constructor(current: board, target: board, move: number, parent?: NBoard) {
         this.currentPuzzle = current;
         this.targetPuzzle = target;

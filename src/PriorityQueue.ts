@@ -1,29 +1,31 @@
 import NBoard from "./Puzzle";
 
-interface IQueueElement {
-    element: NBoard;
-    priority: number;
-}
+// interface IQueueElement {
+//     board: NBoard;
+//     score: number;
+//     move: number;
+//     heuristics: number;
+//     parent?: NBoard;
+// }
 
 export default class PriorityQueue {
 
-    public items: IQueueElement[];
+    public items: NBoard[];
     constructor() {
         this.items = [];
     }
 
-    public enqueue(element, priority) {
-        const QElem = { element, priority };
+    public enqueue(elem: NBoard) {
         let contain = false;
         for (let i = 0; i < this.items.length; i++) {
-            if (this.items[i].priority > QElem.priority) {
-                this.items.splice(i, 0, QElem);
+            if (this.items[i].score > elem.score) {
+                this.items.splice(i, 0, elem);
                 contain = true;
                 break;
             }
         }
         if (!contain) {
-            this.items.push(QElem);
+            this.items.push(elem);
         }
     }
 
