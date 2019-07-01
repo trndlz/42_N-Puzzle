@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Layout, Menu, Icon } from 'antd';
+import { Board } from './Board';
 
 const { Content, Footer } = Layout;
 
@@ -18,8 +19,8 @@ class App extends Component {
 
   render() {
     return (
-
       <div className="App">
+
         <Layout className="layout" style={{ height: "100vh" }}>
           <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
             <Menu.Item key="gift">
@@ -32,25 +33,7 @@ class App extends Component {
         </Menu.Item>
           </Menu>
           <Content style={{ padding: '5vw' }}>
-            
-              <div class="grid">
-                <div class="row">
-                  <div class="box"><div class="inner">1</div></div>
-                  <div class="box"><div class="inner">2</div></div>
-                  <div class="box"><div class="inner">3</div></div>
-                </div>
-                <div class="row">
-                  <div class="box"><div class="inner">6</div></div>
-                  <div class="box"><div class="inner">7</div></div>
-                  <div class="box"><div class="inner">8</div></div>
-                </div>
-                <div class="row">
-                  <div class="box"><div class="inner">16</div></div>
-                  <div class="box"><div class="inner">17</div></div>
-                  <div class="box"><div class="inner">18</div></div>
-                </div>
-              </div>
-
+              <Board input={[1, 2, 3, 5, 5, 5, 7, 8, 0]} />
           </Content>
           <Footer style={{ textAlign: 'center' }}>© 2018</Footer>
         </Layout>

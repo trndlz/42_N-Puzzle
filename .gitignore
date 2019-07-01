@@ -2,3 +2,4 @@
 .DS_Store
 /dist
 /generatePuzzlesInput
+/client/node_modules

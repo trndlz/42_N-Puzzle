@@ -14,7 +14,7 @@ router.get("/", (req: Request, res: Response) => {
     if (solver.hasError.length > 0) {
         return res.status(200).json({
             "error": "Error in input file",
-            "details": solver.hasError.map(e => e + "\n"),
+            "details": solver.hasError,
         })
     } else {
         const start = +new Date();

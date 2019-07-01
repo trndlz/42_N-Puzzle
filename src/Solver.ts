@@ -75,7 +75,7 @@ export default class Solver {
                 res += `\x1b[31m${letter}\x1b[0m`
             }
         })
-        return res ;
+        return res;
     }
 
     public buildHistory(curr: NBoard) {
