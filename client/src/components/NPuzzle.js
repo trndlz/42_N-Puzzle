@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { Spin } from 'antd';
 import { Button, Menu, Icon, Dropdown } from 'antd';
 import Statistics from "./Statistics";
+import axios from "axios";
 import Board from "./Board";
 
-const NPuzzle = () => {
+const NPuzzle = (props) => {
 
     const [moves, setMoves] = useState(0);
     const [delay, setDelay] = useState(1000);
@@ -22,18 +23,29 @@ const NPuzzle = () => {
         }
     }, delay);
 
+    /// TBD ! Error mgt !
     useEffect(() => {
-        fetch('http://localhost:3000/')
-            .then(res => res.json())
-            .then((data) => {
-                setHeuristics(data.heuristics);
-                setMoves(data.moves);
-                setPath(data.path.map((id) => id.split(',').map(a => parseInt(a))));
-                setTimer(data.timer);
-                setTarget(data.target.split(',').map(a => parseInt(a)))
-                setIsLoaded(true);
-            })
-            .catch(e => console.log(e));
+        let source = axios.CancelToken.source();
+        const fetchData = async () => {
+            try {
+                const response = await axios.post('http://localhost:3000/', {
+                rawPuzzle: props.rawPuzzle,
+                cancelToken: source.token,
+            });
+            setHeuristics(response.data.heuristics);
+            setMoves(response.data.moves);
+            setPath(response.data.path.map((id) => id.split(',').map(a => parseInt(a))));
+            setTimer(response.data.timer);
+            setTarget(response.data.target.split(',').map(a => parseInt(a)))
+            setIsLoaded(true);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchData();
+        return () => {
+            source.cancel();
+          };
     }, []);
 
     function useInterval(callback, delay) {

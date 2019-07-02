@@ -4,12 +4,20 @@ import fs from "fs";
 import Solver from "../Solver";
 const router = express.Router();
 
-router.get("/", (req: Request, res: Response) => {
+router.post("/", (req: Request, res: Response) => {
 
-    const testPuzzle = fs.readFileSync("generatePuzzlesInput/solvable/1-size4").toString("utf-8");      
+    const rawPuzzle = req.body.rawPuzzle;
+    const heuristics = req.body.heuristics;
+
+    if (!rawPuzzle) {
+        return res.status(200).json({
+            "error": "Error in input file",
+            "details": "No input",
+        })
+    }  
     const solver = new Solver({
-        inputStr: testPuzzle,
-        heuristics: "manhattan"
+        inputStr: rawPuzzle,
+        heuristics: heuristics || "Manhattan"
     });
     if (solver.hasError.length > 0) {
         return res.status(200).json({
