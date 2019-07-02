@@ -8,18 +8,29 @@ export class Board extends React.Component {
         }
     }
 
+    tileColor = i => {
+        const { target, input } = this.props;
+        if (input[i] === 0) {
+            return <div className="inner-empty">💋</div>;
+        } else if (target[i] === input[i]) {
+            return <div className="inner-target">{input[i]}</div>;
+        } else {
+            return <div className="inner">{input[i]}</div>;
+        }
+
+    }
+
     render() {
-        const { size } = this.state;
-        const array = this.props.input;
-        const sizeArray = [...Array(this.state.size).keys()]
+        const size = Math.sqrt(this.props.input.length);
+        const sizeArray = [...Array(size).keys()]
         return (
             <div className="grid">
-                {sizeArray.map((v) => 
+                {sizeArray.map((v) =>
                     <div className="row" key={v}>{
-                        sizeArray.map((w) => 
-                        <div className="box" key={w}>
-                            <div className="inner">{array[v * size + w]}</div>
-                        </div>)
+                        sizeArray.map((w) =>
+                            <div className="box" key={w}>
+                                {this.tileColor(v * size + w)}
+                            </div>)
                     }</div>
                 )}
             </div>

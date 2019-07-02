@@ -1,6 +1,6 @@
 import React from 'react';
-import axios from 'axios';
 import { Board } from './Board';
+import { Spin } from 'antd';
 
 export class NPuzzle extends React.Component {
     constructor(props) {
@@ -8,6 +8,7 @@ export class NPuzzle extends React.Component {
         this.state = {
             moves: 0,
             path: [],
+            target: [],
             timer: 0,
             isLoaded: false,
             currentBoard: [],
@@ -18,11 +19,13 @@ export class NPuzzle extends React.Component {
         fetch('http://localhost:3000/')
             .then(res => res.json())
             .then((data) => {
+                console.log(data)
                 this.setState({
                     isLoaded: true,
                     moves: data.moves,
                     path: data.path.map((id) => id.split(',').map(a => parseInt(a))),
                     timer: data.timer,
+                    target: data.target.split(',').map(a => parseInt(a)),
                 });
                 
             })
@@ -34,12 +37,11 @@ export class NPuzzle extends React.Component {
 
     tick() {
         const { path } = this.state;
-        if (path.length > 1) {
+        if (path.length) {
             const updatedPath = this.state.path.shift();
-            console.log(updatedPath);
-            // this.setState({
-            //     path: updatedPath,
-            // });
+            this.setState({
+                currentBoard: updatedPath,
+            });
         }
     }
 
@@ -48,13 +50,13 @@ export class NPuzzle extends React.Component {
     }
 
     render() {
-        const { isLoaded, path } = this.state;
+        const { isLoaded, currentBoard, target } = this.state;
 
         if (isLoaded) {
-            console.log(path[0])
-            return <Board input={path[0]} />
+            // console.log(currentBoard)
+            return <Board input={currentBoard} target={target} />
         } else {
-            return <div>TEST</div>
+            return <Spin size="large" />
         }
     }
 }

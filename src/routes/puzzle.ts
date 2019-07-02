@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/", (req: Request, res: Response) => {
 
-    const testPuzzle = fs.readFileSync("generatePuzzlesInput/solvable/5-size3").toString("utf-8");      
+    const testPuzzle = fs.readFileSync("generatePuzzlesInput/solvable/6-size3").toString("utf-8");      
     const solver = new Solver({
         inputStr: testPuzzle,
         heuristics: "manhattan"
@@ -24,6 +24,7 @@ router.get("/", (req: Request, res: Response) => {
             "moves": solver.solutionPath.length - 1,
             "path": solver.solutionPath.map(e => e.currentPuzzle.toString()),
             "timer": elapsed + "ms",
+            "target": solver.targetBoard.toString(),
         })
     }
 });

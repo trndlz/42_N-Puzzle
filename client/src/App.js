@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Layout, Menu, Icon } from 'antd';
-import { Board } from './Board';
 import { NPuzzle } from './NPuzzle';
 
 const { Content, Footer } = Layout;
