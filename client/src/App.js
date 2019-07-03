@@ -8,7 +8,18 @@ import Import from "./components/Import";
 const { Content, Footer } = Layout;
 
 const App = () => {
-  const [current, setCurrent] = useState("3");
+
+  const getCurrentPage = (path) => {
+    if (path === '/puzzle4') {
+      return ("4");
+    } else if (path === '/import') {
+      return ("5");
+    } else {
+      return ("3")
+    }
+  }
+
+  const [current, setCurrent] = useState(getCurrentPage(window.location.pathname));
 
   const handleClick = e => {
     setCurrent(e.key);

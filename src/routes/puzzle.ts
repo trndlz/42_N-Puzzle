@@ -8,10 +8,11 @@ router.post("/", (req: Request, res: Response) => {
 
     const rawPuzzle = req.body.rawPuzzle;
     const heuristics = req.body.heuristics;
+    const greedy = req.body.greedy;
 
     if (!rawPuzzle) {
         return res.status(200).json({
-            "error": "Error in input file",
+            "error": true,
             "details": "No input",
         })
     }  
@@ -21,7 +22,7 @@ router.post("/", (req: Request, res: Response) => {
     });
     if (solver.hasError.length > 0) {
         return res.status(200).json({
-            "error": "Error in input file",
+            "error": true,
             "details": solver.hasError,
         })
     } else {
@@ -29,6 +30,7 @@ router.post("/", (req: Request, res: Response) => {
         solver.aStar();
         const elapsed = +new Date() - start;
         return res.status(200).json({
+            "error": false,
             "moves": solver.solutionPath.length - 1,
             "path": solver.solutionPath.map(e => e.currentPuzzle.toString()),
             "timer": elapsed + "ms",

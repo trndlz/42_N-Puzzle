@@ -43,15 +43,15 @@ export const parseInputString = (input: string) => {
     const errors = [];
     const lines: string[] = input.split(/\n/);
     if (areForbiddenChars(lines)) {
-        errors.push("- Forbidden chars in the input");
+        errors.push("Forbidden chars in the input");
     }
     const stringBoard: string[][] = lines.map(line => line.match(/[\d]+/g)).filter(Boolean).map((value, index, array) => value)
     const boardInput: board = stringBoard.map(a => a.map(b => parseInt(b, 10))).filter(a => a.length !== 1)
     if (isInputDataConsistent(boardInput)) {
-        errors.push("- Input data is inconsistent.");
+        errors.push("Input data is inconsistent.");
     }
     if (!isBoardSolvable(spiralArray(boardInput.length), boardInput)) {
-        errors.push("- Puzzle is not solvable");
+        errors.push("Puzzle is not solvable");
     }
     return { "board": boardInput, "error": errors };
 }

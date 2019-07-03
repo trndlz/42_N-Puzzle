@@ -4,6 +4,7 @@ import { Button, Menu, Icon, Dropdown } from 'antd';
 import Statistics from "./Statistics";
 import axios from "axios";
 import Board from "./Board";
+import InputError from "./InputError";
 
 const NPuzzle = (props) => {
 
@@ -17,6 +18,7 @@ const NPuzzle = (props) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [currentBoard, setCurrentBoard] = useState(0);
     const [rawPuzzle] = useState(props.rawPuzzle);
+    const [errors, setErrors] = useState([]);
 
     useInterval(() => {
         if (currentBoard < moves && play) {
@@ -30,15 +32,20 @@ const NPuzzle = (props) => {
         const fetchData = async () => {
             try {
                 const response = await axios.post('http://localhost:3000/', {
-                rawPuzzle: rawPuzzle,
-                cancelToken: source.token,
-            });
-            setHeuristics(response.data.heuristics);
-            setMoves(response.data.moves);
-            setPath(response.data.path.map((id) => id.split(',').map(a => parseInt(a))));
-            setTimer(response.data.timer);
-            setTarget(response.data.target.split(',').map(a => parseInt(a)))
-            setIsLoaded(true);
+                    rawPuzzle: rawPuzzle,
+                    cancelToken: source.token,
+                });
+                if (response.data.error) {
+                    setErrors(response.data.details);
+                    setIsLoaded(true);
+                } else {
+                    setHeuristics(response.data.heuristics);
+                    setMoves(response.data.moves);
+                    setPath(response.data.path.map((id) => id.split(',').map(a => parseInt(a))));
+                    setTimer(response.data.timer);
+                    setTarget(response.data.target.split(',').map(a => parseInt(a)))
+                    setIsLoaded(true);
+                }
             } catch (error) {
                 console.log(error);
             }
@@ -46,7 +53,7 @@ const NPuzzle = (props) => {
         fetchData();
         return () => {
             source.cancel();
-          };
+        };
     }, []);
 
     function useInterval(callback, delay) {
@@ -87,24 +94,27 @@ const NPuzzle = (props) => {
     );
 
     if (isLoaded) {
-        return (
-            <div>
-                <Statistics moves={moves} heuristics={heuristics} timer={timer} />
+        if (errors.length > 0) {
+            return (<InputError errors={errors} />);
+        } else {
+            return (
                 <div>
-                    <Board input={path[currentBoard]} target={target} />
-                </div>
-                <div style={{ margin: '40px' }}>
-                    <Button icon="play-circle" onClick={playSolution}>Play</Button>
-                    <Button icon="backward" onClick={resetSolution}>Reset</Button>
-                    <Dropdown overlay={speedMenu}>
-                        <Button>
-                            Speed <Icon type="down" />
-                        </Button>
-                    </Dropdown>
-                </div>
-
-            </div >
-        )
+                    <Statistics moves={moves} heuristics={heuristics} timer={timer} />
+                    <div>
+                        <Board input={path[currentBoard]} target={target} />
+                    </div>
+                    <div style={{ margin: '40px' }}>
+                        <Button icon="play-circle" onClick={playSolution}>Play</Button>
+                        <Button icon="backward" onClick={resetSolution}>Reset</Button>
+                        <Dropdown overlay={speedMenu}>
+                            <Button>
+                                Speed <Icon type="down" />
+                            </Button>
+                        </Dropdown>
+                    </div>
+                </div >
+            )
+        }
     } else {
         return <Spin size="large" />
     }
