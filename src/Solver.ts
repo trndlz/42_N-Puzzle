@@ -92,6 +92,7 @@ export default class Solver {
         const init = new NBoard(this.startBoard, this.targetBoard, 0);
         const openQueue = new PriorityQueue();
         openQueue.enqueue(init);
+        // TBD ==> IF TARGET = CURRENT !!! /!\
         while (!isSolutionFound && counter < 40000) {
             counter++;
             this.currentPuzzle = openQueue.dequeue();

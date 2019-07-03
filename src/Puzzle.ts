@@ -1,8 +1,6 @@
-import { spiralArray } from "./components/spiralArray";
-import { ICoord, IParsedData, board, INode } from "./Types";
-import { parseInputString } from "./Parser";
-import { isEqual, cloneDeep } from "lodash"
-import { addCoord, boardToICoordArr, arePuzzlesEqual, swapZeroPosition } from "./Helpers";
+import { ICoord, board, INode } from "./Types";
+import { isEqual, flatten, find } from "lodash"
+import { addCoord, boardToICoordArr, swapZeroPosition } from "./Helpers";
 
 export default class NBoard {
 
@@ -32,13 +30,37 @@ export default class NBoard {
         this.targetPuzzle = target;
         this.size = current.length;
         this.moves = move;
-        this.zeroPosition = this.getZeroPosition(current);
+        this.zeroPosition = this.getValueCoordinates(current, 0);
         this.nextZeroPositions = this.getNeighboursZero();
         this.heuristics = this.manhattanPriority();
         this.score = this.heuristics + this.moves;
         this.childrenPuzzles = this.getChildrenPuzzles();
         this.isTarget = isEqual(current, target);
         this.parent = parent;
+    }
+
+    private linearConflict(): number {
+        let conflicts = 0;
+        const values = this.size * this.size;
+        for (let i = 1; i < values - 1; i++) {
+            for (let j = 2; j < values; j++) {
+                const currI = this.getValueCoordinates(this.currentPuzzle, i);
+                const currJ = this.getValueCoordinates(this.currentPuzzle, j);
+                const targI = this.getValueCoordinates(this.targetPuzzle, i);
+                const targJ = this.getValueCoordinates(this.targetPuzzle, j);
+                if (currI.x === currJ.x && targI.x === targJ.x) {
+                    if ((currI.y < currJ.y && targI.y > targJ.y) || (currI.y > currJ.y && targI.y < targJ.y)) {
+                        conflicts++;
+                    }
+                }
+                if (currI.y === currJ.y && targI.y === targJ.y) {
+                    if ((currI.x < currJ.x && targI.x > targJ.x) || (currI.x > currJ.x && targI.x < targJ.x)) {
+                        conflicts++;
+                    }
+                }
+            }
+        }
+        return 2 * conflicts;
     }
 
     // Hamming priority function.
@@ -86,11 +108,11 @@ export default class NBoard {
         return neighbours;
     }
 
-    private getZeroPosition(puzzle: board): ICoord {
+    private getValueCoordinates(puzzle: board, value: number): ICoord {
         let res: ICoord = { x: -1, y: -1 }
         puzzle.forEach((arr, y) => {
             arr.forEach((val, x) => {
-                if (val === 0) {
+                if (val === value) {
                     res = { "x": x, "y": y }
                 }
             })
