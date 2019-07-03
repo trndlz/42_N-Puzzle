@@ -16,6 +16,7 @@ const NPuzzle = (props) => {
     const [heuristics, setHeuristics] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
     const [currentBoard, setCurrentBoard] = useState(0);
+    const [rawPuzzle] = useState(props.rawPuzzle);
 
     useInterval(() => {
         if (currentBoard < moves && play) {
@@ -29,7 +30,7 @@ const NPuzzle = (props) => {
         const fetchData = async () => {
             try {
                 const response = await axios.post('http://localhost:3000/', {
-                rawPuzzle: props.rawPuzzle,
+                rawPuzzle: rawPuzzle,
                 cancelToken: source.token,
             });
             setHeuristics(response.data.heuristics);
