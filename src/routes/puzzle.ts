@@ -1,6 +1,5 @@
 import express = require("express");
 import { Request, Response } from "express";
-import fs from "fs";
 import Solver from "../Solver";
 const router = express.Router();
 
@@ -8,7 +7,7 @@ router.post("/", (req: Request, res: Response) => {
 
     const rawPuzzle = req.body.rawPuzzle;
     const heuristics = req.body.heuristics;
-    const greedy = req.body.greedy;
+    // const greedy = req.body.greedy;
 
     if (!rawPuzzle) {
         return res.status(200).json({
@@ -39,4 +38,5 @@ router.post("/", (req: Request, res: Response) => {
         })
     }
 });
+
 export default router;
