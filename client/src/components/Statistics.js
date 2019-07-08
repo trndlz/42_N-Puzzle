@@ -17,10 +17,10 @@ const Statistics = props => {
             </Row>
             <Row gutter={16} >
                 <Col span={8}>
-                    <Statistic title="Time Complexity" value={"???"} />
+                    <Statistic title="Time Complexity" value={props.timeComplexity} />
                 </Col>
                 <Col span={8}>
-                    <Statistic title="Space Complexity" value={"???"} />
+                    <Statistic title="Space Complexity" value={props.spaceComplexity} />
                 </Col>
                 <Col span={8}>
                     <Statistic title="???" value={"???"} />

@@ -15,6 +15,8 @@ export default class Solver {
     public moves: number;
     public hasError: string[];
     public solutionPath: NBoard[];
+    public complexityInTime: number;
+    public complexityInSpace: number;
 
     constructor(input: IParsedData) {
         const puzzle = parseInputString(input.inputStr);
@@ -25,6 +27,8 @@ export default class Solver {
         this.hasError = puzzle.error;
         this.heuristics = "manhattan";
         this.solutionPath = [];
+        this.complexityInSpace = 1;
+        this.complexityInTime = 1;
     }
 
     public isBoardInASet(set: NBoard[], b: NBoard): boolean {
@@ -58,6 +62,7 @@ export default class Solver {
         while (!isSolutionFound && counter < 40000) {
             counter++;
             this.currentPuzzle = openQueue.dequeue();
+            this.complexityInSpace = Math.max(this.complexityInSpace, openQueue.items.length);
             closedSet.push(this.currentPuzzle);
             const children = this.currentPuzzle.childrenPuzzles.map(element => {
                 return new NBoard(element, this.targetBoard, this.currentPuzzle.moves + 1, this.currentPuzzle)
@@ -65,7 +70,8 @@ export default class Solver {
             children.forEach((child) => {
                 if (child.isTarget) {
                     isSolutionFound = true;
-                    closedSet.push(child)
+                    closedSet.push(child);
+                    this.complexityInTime = closedSet.length;
                     this.buildHistory(child);
                 }
                 // To be improved with a nice searching algo

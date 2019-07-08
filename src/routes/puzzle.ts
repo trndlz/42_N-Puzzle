@@ -35,6 +35,8 @@ router.post("/", (req: Request, res: Response) => {
             "timer": elapsed + "ms",
             "target": solver.targetBoard.toString(),
             "heuristics": solver.heuristics,
+            "complexityInTime": solver.complexityInTime,
+            "complexityInSize": solver.complexityInSpace,
         })
     }
 });

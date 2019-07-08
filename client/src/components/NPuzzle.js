@@ -19,6 +19,8 @@ const NPuzzle = (props) => {
     const [currentBoard, setCurrentBoard] = useState(0);
     const [rawPuzzle] = useState(props.rawPuzzle);
     const [errors, setErrors] = useState([]);
+    const [timeComplexity, setTimeComplexity] = useState();
+    const [spaceComplexity, setSpaceComplexity] = useState();
 
     useInterval(() => {
         if (currentBoard < moves && play) {
@@ -41,6 +43,8 @@ const NPuzzle = (props) => {
                 } else {
                     setHeuristics(response.data.heuristics);
                     setMoves(response.data.moves);
+                    setTimeComplexity(response.data.complexityInTime);
+                    setSpaceComplexity(response.data.complexityInSize)
                     setPath(response.data.path.map((id) => id.split(',').map(a => parseInt(a))));
                     setTimer(response.data.timer);
                     setTarget(response.data.target.split(',').map(a => parseInt(a)))
@@ -99,7 +103,7 @@ const NPuzzle = (props) => {
         } else {
             return (
                 <div>
-                    <Statistics moves={moves} heuristics={heuristics} timer={timer} />
+                    <Statistics moves={moves} heuristics={heuristics} timer={timer} spaceComplexity={spaceComplexity} timeComplexity={timeComplexity} />
                     <div>
                         <Board input={path[currentBoard]} target={target} />
                     </div>
