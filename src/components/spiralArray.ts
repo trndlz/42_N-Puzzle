@@ -1,6 +1,6 @@
-import { board } from "../Types";
+import { board2D } from "../Types";
 
-export function spiralArray(n: number): board {
+export function spiralArray(n: number): board2D {
     const result = new Array(n);
     for (let p = 0; p < result.length; p++) {
         result[p] = new Array(n);

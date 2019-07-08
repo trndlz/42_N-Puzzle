@@ -1,27 +1,26 @@
 import { parseInputString } from "./Parser";
-import { IParsedData, board, INode } from "./Types";
+import { IParsedData, board2D, board1D } from "./Types";
 import { spiralArray } from "./components/spiralArray";
-import { isEqual } from "lodash";
+import { isEqual, flatten } from "lodash";
 import NBoard from "./Puzzle";
 import PriorityQueue from "./PriorityQueue"
 
 export default class Solver {
 
     public size: number;
-    public startBoard: board;
+    public startBoard: board1D;
     public currentPuzzle: NBoard;
     public heuristics: string;
-    public targetBoard: board;
+    public targetBoard: board1D;
     public moves: number;
-    public initialNode: INode;
     public hasError: string[];
     public solutionPath: NBoard[];
-    
+
     constructor(input: IParsedData) {
         const puzzle = parseInputString(input.inputStr);
         const puzzleSize = puzzle.board.length;
-        this.startBoard = puzzle.board;
-        this.targetBoard = spiralArray(puzzleSize);
+        this.startBoard = flatten(puzzle.board);
+        this.targetBoard = flatten(spiralArray(puzzleSize));
         this.size = puzzleSize;
         this.hasError = puzzle.error;
         this.heuristics = "manhattan";
@@ -35,7 +34,7 @@ export default class Solver {
                 test = true;
             }
         })
-        return test ;
+        return test;
     }
 
     public buildHistory(curr: NBoard) {

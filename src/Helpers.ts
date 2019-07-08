@@ -1,21 +1,10 @@
 import { isEqual, cloneDeep } from "lodash"
-import { board, ICoord } from "./Types";
+import { board1D, ICoord, board2D } from "./Types";
 
 
 // Check if two boards are equal
-export const arePuzzlesEqual = (a: board, b: board) => {
+export const arePuzzlesEqual = (a: board1D, b: board1D) => {
     return isEqual(a, b);
-}
-
-// Converts number[][] to ICoord[] 
-export const  boardToICoordArr = (puzzle: board) => {
-    const keyCoord = [];
-    puzzle.forEach((arr, y) => {
-        arr.forEach((val, x) => {
-            keyCoord[val] = { "x": x, "y": y };
-        })
-    })
-    return keyCoord;
 }
 
 // Vector addition
@@ -26,10 +15,9 @@ export const addCoord = (a: ICoord, b: ICoord) => {
     }
 }
 
-// Inverts zero and returns new board
-export const swapZeroPosition = (puzzle: board, oldZero: ICoord, newZero: ICoord) => {
+export const swapZeroPosition = (puzzle: number[], oldZero: number, newZero: number) => {
     const newPuzzle = cloneDeep(puzzle);
-    newPuzzle[oldZero.y][oldZero.x] = puzzle[newZero.y][newZero.x];
-    newPuzzle[newZero.y][newZero.x] = 0;
+    newPuzzle[oldZero] = puzzle[newZero];
+    newPuzzle[newZero] = 0;
     return newPuzzle;
 }

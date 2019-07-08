@@ -1,6 +1,6 @@
-import { ICoord, board, INode } from "./Types";
-import { isEqual, flatten, find } from "lodash"
-import { addCoord, boardToICoordArr, swapZeroPosition } from "./Helpers";
+import { ICoord, board2D, board1D } from "./Types";
+import { isEqual, flatten, find, findIndex } from "lodash"
+import { addCoord, swapZeroPosition } from "./Helpers";
 
 export default class NBoard {
 
@@ -11,26 +11,29 @@ export default class NBoard {
         { "x": 1, "y": 0 }, // Up
     ]
 
-    public node: INode;
     public isTarget: boolean;
-    public currentPuzzle: board;
-    public targetPuzzle: board;
-    public previousPuzzle?: board;
-    public childrenPuzzles: board[];
-    public zeroPosition: ICoord;
-    public nextZeroPositions: ICoord[];
+    public currentPuzzle: board1D;
+    public targetPuzzle: board1D;
+    public current2D: ICoord[];
+    public target2D: ICoord[];
+    public previousPuzzle?: board1D;
+    public childrenPuzzles: board1D[];
+    public zeroPosition: number;
+    public nextZeroPositions: number[];
     public heuristics: number;
     public score: number;
     public moves: number;
     public size: number;
     public parent: NBoard;
 
-    constructor(current: board, target: board, move: number, parent?: NBoard) {
+    constructor(current: board1D, target: board1D, move: number, parent?: NBoard) {
         this.currentPuzzle = current;
         this.targetPuzzle = target;
-        this.size = current.length;
+        this.size = Math.floor(Math.sqrt(current.length));
+        this.current2D = this.convert1Dto2D(current);
+        this.target2D = this.convert1Dto2D(target);
         this.moves = move;
-        this.zeroPosition = this.getValueCoordinates(current, 0);
+        this.zeroPosition = current.indexOf(0);
         this.nextZeroPositions = this.getNeighboursZero();
         this.heuristics = this.manhattanPriority();
         this.score = this.heuristics + this.moves;
@@ -44,10 +47,10 @@ export default class NBoard {
         const values = this.size * this.size;
         for (let i = 1; i < values - 1; i++) {
             for (let j = 2; j < values; j++) {
-                const currI = this.getValueCoordinates(this.currentPuzzle, i);
-                const currJ = this.getValueCoordinates(this.currentPuzzle, j);
-                const targI = this.getValueCoordinates(this.targetPuzzle, i);
-                const targJ = this.getValueCoordinates(this.targetPuzzle, j);
+                const currI = this.getIndexCoordinates(this.currentPuzzle, i);
+                const currJ = this.getIndexCoordinates(this.currentPuzzle, j);
+                const targI = this.getIndexCoordinates(this.targetPuzzle, i);
+                const targJ = this.getIndexCoordinates(this.targetPuzzle, j);
                 if (currI.x === currJ.x && targI.x === targJ.x) {
                     if ((currI.y < currJ.y && targI.y > targJ.y) || (currI.y > currJ.y && targI.y < targJ.y)) {
                         conflicts++;
@@ -63,18 +66,11 @@ export default class NBoard {
         return 2 * conflicts;
     }
 
-    // Hamming priority function.
-    // The number of blocks in the wrong position + number of moves made so far
-    private hammingPriority(): number {
-        let i = 0;
-        this.currentPuzzle.forEach((arr, y) => {
-            arr.forEach((val, x) => {
-                if (val !== 0 && val !== this.targetPuzzle[y][x]) {
-                    i++;
-                }
-            })
+    private convert1Dto2D(board: board1D): ICoord[] {
+        return board.map((val, index) => {
+            const a = board.indexOf(index);
+            return this.convertIndexToArray(a)
         })
-        return (i + this.moves);
     }
 
     private manhattanDistance(c1: ICoord, c2: ICoord): number {
@@ -85,43 +81,35 @@ export default class NBoard {
     // The sum of the Manhattan distances + number of moves made so far
     private manhattanPriority(): number {
         let i = 0;
-        const targetCoordArr = boardToICoordArr(this.targetPuzzle);
-        this.currentPuzzle.forEach((arr, y) => {
-            arr.forEach((val, x) => {
-                if (val !== 0 && val !== this.targetPuzzle[y][x]) {
-                    const targetCoord = targetCoordArr[val]
-                    i += this.manhattanDistance(targetCoord, { "x": x, "y": y });
-                }
-            })
+        this.current2D.forEach((val, index) => {
+            if (index !== 0 && val !== this.target2D[index]) {
+                i += this.manhattanDistance(val, this.target2D[index]);
+            }
         })
         return (i);
     }
 
-    private getNeighboursZero(): ICoord[] {
+    private getNeighboursZero(): number[] {
         const neighbours = [];
         this.possibleMoves.forEach((dir) => {
-            const testCoord = addCoord(this.zeroPosition, dir);
+            const testCoord = addCoord(this.convertIndexToArray(this.zeroPosition), dir);
             if (testCoord.x >= 0 && testCoord.x < this.size && testCoord.y >= 0 && testCoord.y < this.size) {
-                neighbours.push(testCoord)
+                neighbours.push(testCoord.y * this.size + testCoord.x)
             }
         })
         return neighbours;
     }
 
-    private getValueCoordinates(puzzle: board, value: number): ICoord {
-        let res: ICoord = { x: -1, y: -1 }
-        puzzle.forEach((arr, y) => {
-            arr.forEach((val, x) => {
-                if (val === value) {
-                    res = { "x": x, "y": y }
-                }
-            })
-        })
-        return res
+    private getIndexCoordinates(puzzle: board1D, value: number): ICoord {
+        const index = puzzle.indexOf(value)
+        return (this.convertIndexToArray(index))
     }
 
-    // Returns array of puzzles 
-    private getChildrenPuzzles(): board[] {
+    private convertIndexToArray(index: number): ICoord {
+        return { x: Math.floor(index % this.size), y: Math.floor(index / this.size), }
+    }
+
+    private getChildrenPuzzles(): number[][] {
         return this.nextZeroPositions.map((next) => {
             return swapZeroPosition(this.currentPuzzle, this.zeroPosition, next)
         })
