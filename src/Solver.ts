@@ -17,6 +17,7 @@ export default class Solver {
     public solutionPath: NBoard[];
     public complexityInTime: number;
     public complexityInSpace: number;
+    public isSolutionFound: boolean;
 
     constructor(inputStr: string, heuristics: string) {
         const puzzle = parseInputString(inputStr);
@@ -29,6 +30,7 @@ export default class Solver {
         this.solutionPath = [];
         this.complexityInSpace = 1;
         this.complexityInTime = 1;
+        this.isSolutionFound = false;
     }
 
     public isBoardInASet(set: NBoard[], b: NBoard): boolean {
@@ -49,39 +51,50 @@ export default class Solver {
     }
 
     public aStar() {
-        let isSolutionFound = false;
+        
         let counter = 0;
+		// My closedSet is just a normal array. This can definitely be optimized
         const closedSet: NBoard[] = [];
-        const init = new NBoard(this.startBoard, this.targetBoard, 0, this.heuristics);
+        // I create the first Board with parsed input and then add it into the priority queue using enqueue() method
+		const init = new NBoard(this.startBoard, this.targetBoard, 0, this.heuristics);
         const openQueue = new PriorityQueue();
         openQueue.enqueue(init);
-        if (init.isTarget) {
+        // If this this puzzle is already the target => Solution is found no A* is launched
+		if (init.isTarget) {
             this.solutionPath.push(init);
-            isSolutionFound = true;
+            this.isSolutionFound = true;
         }
-        while (!isSolutionFound && counter < 40000) {
+		// Main loop that I limit arbitrary to 40000
+        while (!this.isSolutionFound && counter < 40000) {
             counter++;
+			// currentPuzzle is Board on top of the PriorityQueue
             this.currentPuzzle = openQueue.dequeue();
             this.complexityInSpace = Math.max(this.complexityInSpace, openQueue.items.length);
-            closedSet.push(this.currentPuzzle);
+            // As we "explore" this Board, it goes into the closedSet
+			closedSet.push(this.currentPuzzle);
+			// I create an array of all possible moves of my current puzzle
             const children = this.currentPuzzle.childrenPuzzles.map(element => {
                 return new NBoard(element, this.targetBoard, this.currentPuzzle.moves + 1, this.heuristics, this.currentPuzzle)
             });
+			// For each child, 4 possibilities
             children.forEach((child) => {
+				// 1) Child is the target => We're done and build the history path from this chid to the initial state
                 if (child.isTarget) {
-                    isSolutionFound = true;
+                    this.isSolutionFound = true;
                     closedSet.push(child);
                     this.complexityInTime = closedSet.length;
                     this.buildHistory(child);
                 }
-                // To be improved with a nice searching algo
+                // 2) Child has already been explored so it is in closedSet. To be improved with a nice searching algo ?
                 else if (this.isBoardInASet(closedSet, child)) {
-                    // Nothing to do !
+                    // Nothing to do we don't 
                 }
+				// 3) Child is already in the priorityQueue. Do we add it in the Queue again ?
                 else if (this.isBoardInASet(openQueue.items, child)) {
                     // Do we add a Board if already in the openSet ?
-                    // Nothing to do !
+                    // Here I do nothing
                 }
+				// 4) Child is added in the priority queue and will be explored according to it's score
                 else {
                     openQueue.enqueue(child);
                 }

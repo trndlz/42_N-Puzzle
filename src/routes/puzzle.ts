@@ -12,7 +12,7 @@ router.post("/", (req: Request, res: Response) => {
     if (!rawPuzzle) {
         return res.status(200).json({
             "error": true,
-            "details": "No input",
+            "details": ["No input"],
         })
     }  
     const solver = new Solver(rawPuzzle, heuristicsInput);
@@ -24,6 +24,12 @@ router.post("/", (req: Request, res: Response) => {
     } else {
         const start = +new Date();
         solver.aStar();
+        if (!solver.isSolutionFound) {
+            return res.status(200).json({
+                "error": true,
+                "details": ["Puzzle could not be solved :("]
+            })
+        }
         const elapsed = +new Date() - start;
         return res.status(200).json({
             "error": false,

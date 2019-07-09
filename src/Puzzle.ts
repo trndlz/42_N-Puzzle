@@ -36,7 +36,7 @@ export default class NBoard {
         this.zeroPosition = current.indexOf(0);
         this.nextZeroPositions = this.getNeighboursZero();
         this.heuristics = heuristics;
-        this.score = this.getHeuristics() + this.moves;
+        this.score = this.getHeuristics();
         this.childrenPuzzles = this.getChildrenPuzzles();
         this.isTarget = isEqual(current, target);
         this.parent = parent;
@@ -53,7 +53,6 @@ export default class NBoard {
             return this.manhattanPriority();
         }
     }
-
 
     // Hamming priority function
     // The sum of the misplaced tiles
