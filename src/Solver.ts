@@ -87,7 +87,7 @@ export default class Solver {
                 }
                 // 2) Child has already been explored so it is in closedSet. To be improved with a nice searching algo ?
                 else if (this.isBoardInASet(closedSet, child)) {
-                    // Nothing to do we don't 
+                    // Nothing to do here
                 }
 				// 3) Child is already in the priorityQueue. Do we add it in the Queue again ?
                 else if (this.isBoardInASet(openQueue.items, child)) {
