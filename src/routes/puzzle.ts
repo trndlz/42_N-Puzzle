@@ -7,7 +7,8 @@ router.post("/", (req: Request, res: Response) => {
 
     const rawPuzzle = req.body.rawPuzzle;
     const heuristicsInput = req.body.heuristics;
-    // const greedy = req.body.greedy;
+    const searchAlgo = req.body.searchAlgo;
+    const aStarWeight = parseInt(req.body.aStarWeight, 10);
 
     if (!rawPuzzle) {
         return res.status(200).json({
@@ -15,7 +16,7 @@ router.post("/", (req: Request, res: Response) => {
             "details": ["No input"],
         })
     }  
-    const solver = new Solver(rawPuzzle, heuristicsInput);
+    const solver = new Solver(rawPuzzle, heuristicsInput, searchAlgo, aStarWeight);
     if (solver.hasError.length > 0) {
         return res.status(200).json({
             "error": true,

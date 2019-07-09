@@ -18,8 +18,10 @@ export default class Solver {
     public complexityInTime: number;
     public complexityInSpace: number;
     public isSolutionFound: boolean;
+    public searchAlgo: string;
+    public weight: number;
 
-    constructor(inputStr: string, heuristics: string) {
+    constructor(inputStr: string, heuristics: string, searchAlgo: string, aStarWeight: number) {
         const puzzle = parseInputString(inputStr);
         const puzzleSize = puzzle.board.length;
         this.startBoard = flatten(puzzle.board);
@@ -27,6 +29,8 @@ export default class Solver {
         this.size = puzzleSize;
         this.hasError = puzzle.error;
         this.heuristics = heuristics || "MANHATTAN";
+        this.searchAlgo = searchAlgo || "A_STAR";
+        this.weight = aStarWeight || 1.001;
         this.solutionPath = [];
         this.complexityInSpace = 1;
         this.complexityInTime = 1;
@@ -56,7 +60,7 @@ export default class Solver {
 		// My closedSet is just a normal array. This can definitely be optimized
         const closedSet: NBoard[] = [];
         // I create the first Board with parsed input and then add it into the priority queue using enqueue() method
-		const init = new NBoard(this.startBoard, this.targetBoard, 0, this.heuristics);
+		const init = new NBoard(this.startBoard, this.targetBoard, 0, this.heuristics, this.searchAlgo, this.weight);
         const openQueue = new PriorityQueue();
         openQueue.enqueue(init);
         // If this this puzzle is already the target => Solution is found no A* is launched
@@ -74,7 +78,7 @@ export default class Solver {
 			closedSet.push(this.currentPuzzle);
 			// I create an array of all possible moves of my current puzzle
             const children = this.currentPuzzle.childrenPuzzles.map(element => {
-                return new NBoard(element, this.targetBoard, this.currentPuzzle.moves + 1, this.heuristics, this.currentPuzzle)
+                return new NBoard(element, this.targetBoard, this.currentPuzzle.moves + 1, this.heuristics, this.searchAlgo, this.weight, this.currentPuzzle)
             });
 			// For each child, 4 possibilities
             children.forEach((child) => {

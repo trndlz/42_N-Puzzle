@@ -1,6 +1,7 @@
 import { ICoord, board2D, board1D } from "./Types";
 import { isEqual, flatten, find, findIndex } from "lodash"
 import { addCoord, swapZeroPosition } from "./Helpers";
+import { timingSafeEqual } from "crypto";
 
 export default class NBoard {
 
@@ -25,8 +26,11 @@ export default class NBoard {
     public moves: number;
     public size: number;
     public parent: NBoard;
+    public weightH: number;
+    public weightG: number;
+    public searchAlgo: string;
 
-    constructor(current: board1D, target: board1D, move: number, heuristics: string, parent?: NBoard) {
+    constructor(current: board1D, target: board1D, move: number, heuristics: string, searchAlgo: string, weight: number, parent?: NBoard) {
         this.currentPuzzle = current;
         this.targetPuzzle = target;
         this.size = Math.floor(Math.sqrt(current.length));
@@ -36,13 +40,16 @@ export default class NBoard {
         this.zeroPosition = current.indexOf(0);
         this.nextZeroPositions = this.getNeighboursZero();
         this.heuristics = heuristics;
-        this.score = this.getHeuristics();
         this.childrenPuzzles = this.getChildrenPuzzles();
         this.isTarget = isEqual(current, target);
         this.parent = parent;
+        this.weightH = weight;
+        this.weightG = searchAlgo === "GREEDY" ? 0 : 1;
+        this.searchAlgo = searchAlgo;
+        this.score = this.weightH * this.getH() + this.weightG * this.moves;
     }
 
-    private getHeuristics(): number {
+    private getH(): number {
         if (this.heuristics === "HAMMING") {
             return this.hammingPriority();
         }

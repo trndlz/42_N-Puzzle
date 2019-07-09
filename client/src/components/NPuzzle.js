@@ -15,6 +15,8 @@ const NPuzzle = (props) => {
     const [timer, setTimer] = useState([]);
     const [play, setPlay] = useState(false);
     const [heuristics, setHeuristics] = useState(props.heuristics);
+    const [searchAlgo] = useState(props.searchAlgo);
+    const [aStarWeight] = useState(props.aStarWeight);
     const [isLoaded, setIsLoaded] = useState(false);
     const [currentBoard, setCurrentBoard] = useState(0);
     const [rawPuzzle] = useState(props.rawPuzzle);
@@ -36,6 +38,8 @@ const NPuzzle = (props) => {
                 const response = await axios.post('http://localhost:3000/', {
                     rawPuzzle: rawPuzzle,
                     heuristics: heuristics,
+                    searchAlgo: searchAlgo,
+                    aStarWeight: aStarWeight,
                     cancelToken: source.token,
                 });
                 if (response.data.error) {

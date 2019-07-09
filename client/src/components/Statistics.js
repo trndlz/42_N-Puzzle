@@ -1,6 +1,6 @@
 import React from "react";
 import { Statistic, Row, Col } from 'antd';
-import { HeuristicsDesc } from "./Heuristics";
+import { HeuristicsDesc } from "./Text";
 
 
 const Statistics = props => {
