@@ -18,14 +18,14 @@ export default class Solver {
     public complexityInTime: number;
     public complexityInSpace: number;
 
-    constructor(input: IParsedData) {
-        const puzzle = parseInputString(input.inputStr);
+    constructor(inputStr: string, heuristics: string) {
+        const puzzle = parseInputString(inputStr);
         const puzzleSize = puzzle.board.length;
         this.startBoard = flatten(puzzle.board);
         this.targetBoard = flatten(spiralArray(puzzleSize));
         this.size = puzzleSize;
         this.hasError = puzzle.error;
-        this.heuristics = "manhattan";
+        this.heuristics = heuristics || "MANHATTAN";
         this.solutionPath = [];
         this.complexityInSpace = 1;
         this.complexityInTime = 1;
@@ -52,7 +52,7 @@ export default class Solver {
         let isSolutionFound = false;
         let counter = 0;
         const closedSet: NBoard[] = [];
-        const init = new NBoard(this.startBoard, this.targetBoard, 0);
+        const init = new NBoard(this.startBoard, this.targetBoard, 0, this.heuristics);
         const openQueue = new PriorityQueue();
         openQueue.enqueue(init);
         if (init.isTarget) {
@@ -65,7 +65,7 @@ export default class Solver {
             this.complexityInSpace = Math.max(this.complexityInSpace, openQueue.items.length);
             closedSet.push(this.currentPuzzle);
             const children = this.currentPuzzle.childrenPuzzles.map(element => {
-                return new NBoard(element, this.targetBoard, this.currentPuzzle.moves + 1, this.currentPuzzle)
+                return new NBoard(element, this.targetBoard, this.currentPuzzle.moves + 1, this.heuristics, this.currentPuzzle)
             });
             children.forEach((child) => {
                 if (child.isTarget) {

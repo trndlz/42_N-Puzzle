@@ -6,7 +6,7 @@ const router = express.Router();
 router.post("/", (req: Request, res: Response) => {
 
     const rawPuzzle = req.body.rawPuzzle;
-    const heuristics = req.body.heuristics;
+    const heuristicsInput = req.body.heuristics;
     // const greedy = req.body.greedy;
 
     if (!rawPuzzle) {
@@ -15,10 +15,7 @@ router.post("/", (req: Request, res: Response) => {
             "details": "No input",
         })
     }  
-    const solver = new Solver({
-        inputStr: rawPuzzle,
-        heuristics: heuristics || "Manhattan"
-    });
+    const solver = new Solver(rawPuzzle, heuristicsInput);
     if (solver.hasError.length > 0) {
         return res.status(200).json({
             "error": true,

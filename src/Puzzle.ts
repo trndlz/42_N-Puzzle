@@ -20,13 +20,13 @@ export default class NBoard {
     public childrenPuzzles: board1D[];
     public zeroPosition: number;
     public nextZeroPositions: number[];
-    public heuristics: number;
+    public heuristics: string;
     public score: number;
     public moves: number;
     public size: number;
     public parent: NBoard;
 
-    constructor(current: board1D, target: board1D, move: number, parent?: NBoard) {
+    constructor(current: board1D, target: board1D, move: number, heuristics: string, parent?: NBoard) {
         this.currentPuzzle = current;
         this.targetPuzzle = target;
         this.size = Math.floor(Math.sqrt(current.length));
@@ -35,13 +35,41 @@ export default class NBoard {
         this.moves = move;
         this.zeroPosition = current.indexOf(0);
         this.nextZeroPositions = this.getNeighboursZero();
-        this.heuristics = this.manhattanPriority();
-        this.score = this.heuristics + this.moves;
+        this.heuristics = heuristics;
+        this.score = this.getHeuristics() + this.moves;
         this.childrenPuzzles = this.getChildrenPuzzles();
         this.isTarget = isEqual(current, target);
         this.parent = parent;
     }
 
+    private getHeuristics(): number {
+        if (this.heuristics === "HAMMING") {
+            return this.hammingPriority();
+        }
+        else if (this.heuristics === "MIXED_LINEAR_CONFLICT_MANHATTAN") {
+            return (this.manhattanPriority() + 2 * this.linearConflict())
+        }
+        else {
+            return this.manhattanPriority();
+        }
+    }
+
+
+    // Hamming priority function
+    // The sum of the misplaced tiles
+    private hammingPriority(): number {
+        let i = 0;
+        this.current2D.forEach((val, index) => {
+            if (index !== 0 && val !== this.target2D[index]) {
+                i++;
+            }
+        })
+        return (i);
+    }
+
+    // Linear Conflict function
+    // Two tiles ‘a’ and ‘b’ are in a linear conflict if they are in the same row or column,
+    // also their goal positions are in the same row or column and the goal position of one of the tiles is blocked by the other tile in that row.
     private linearConflict(): number {
         let conflicts = 0;
         const values = this.size * this.size;
@@ -63,7 +91,7 @@ export default class NBoard {
                 }
             }
         }
-        return 2 * conflicts;
+        return conflicts;
     }
 
     private convert1Dto2D(board: board1D): ICoord[] {
@@ -78,7 +106,7 @@ export default class NBoard {
     }
 
     // Manhattan priority function
-    // The sum of the Manhattan distances + number of moves made so far
+    // The sum of the Manhattan distances
     private manhattanPriority(): number {
         let i = 0;
         this.current2D.forEach((val, index) => {

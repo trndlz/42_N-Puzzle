@@ -14,7 +14,7 @@ const NPuzzle = (props) => {
     const [target, setTarget] = useState([]);
     const [timer, setTimer] = useState([]);
     const [play, setPlay] = useState(false);
-    const [heuristics, setHeuristics] = useState([]);
+    const [heuristics, setHeuristics] = useState(props.heuristics);
     const [isLoaded, setIsLoaded] = useState(false);
     const [currentBoard, setCurrentBoard] = useState(0);
     const [rawPuzzle] = useState(props.rawPuzzle);
@@ -35,6 +35,7 @@ const NPuzzle = (props) => {
             try {
                 const response = await axios.post('http://localhost:3000/', {
                     rawPuzzle: rawPuzzle,
+                    heuristics: heuristics,
                     cancelToken: source.token,
                 });
                 if (response.data.error) {

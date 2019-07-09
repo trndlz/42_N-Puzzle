@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Input, Typography, Radio, Switch, Icon, Button, Alert } from 'antd';
 import NPuzzle from "./NPuzzle";
-
+import { HeuristicsDesc } from "./Heuristics";
+ 
 const { Title } = Typography;
 const { TextArea } = Input;
-
-
 
 const Import = () => {
 
@@ -29,7 +28,6 @@ const Import = () => {
 
     const formValidation = () => {
         if (rawPuzzle) {
-            console.log(rawPuzzle)
             setIsReady(true);
         } else {
             setIsPuzzleEmpty(true);
@@ -37,7 +35,7 @@ const Import = () => {
     }
 
     if (isReady) {
-        return <NPuzzle rawPuzzle={rawPuzzle} />;
+        return <NPuzzle rawPuzzle={rawPuzzle} heuristics={heuristics} />;
     } else {
         return (
             <div>
@@ -51,9 +49,9 @@ const Import = () => {
                 />
                 <Title level={2} style={{ margin: '20px' }}>Parameters</Title>
                 <Radio.Group onChange={changeHeuristics} defaultValue="manhattan">
-                    <Radio.Button value="manhattan">Manhattan</Radio.Button>
-                    <Radio.Button value="x">Another ?</Radio.Button>
-                    <Radio.Button value="xx">Another one ?</Radio.Button>
+                    <Radio.Button value="MANHATTAN">{HeuristicsDesc.MANHATTAN}</Radio.Button>
+                    <Radio.Button value="HAMMING">{HeuristicsDesc.HAMMING}</Radio.Button>
+                    <Radio.Button value="MIXED_LINEAR_CONFLICT_MANHATTAN">{HeuristicsDesc.MIXED_LINEAR_CONFLICT_MANHATTAN}</Radio.Button>
                 </Radio.Group>
                 <div style={{ margin: '20px' }}>
                     <Switch onChange={changeGreedy} /> Greedy search
