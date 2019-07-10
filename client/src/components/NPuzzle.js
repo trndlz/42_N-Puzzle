@@ -104,7 +104,7 @@ const NPuzzle = (props) => {
     );
 
     if (isLoaded) {
-        if (errors.length > 0) {
+        if (errors) {
             return (<InputError errors={errors} />);
         } else {
             return (
