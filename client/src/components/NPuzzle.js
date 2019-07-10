@@ -20,7 +20,7 @@ const NPuzzle = (props) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [currentBoard, setCurrentBoard] = useState(0);
     const [rawPuzzle] = useState(props.rawPuzzle);
-    const [errors, setErrors] = useState([]);
+    const [errors, setErrors] = useState();
     const [timeComplexity, setTimeComplexity] = useState();
     const [sizeComplexity, setSizeComplexity] = useState();
 
@@ -56,7 +56,8 @@ const NPuzzle = (props) => {
                     setIsLoaded(true);
                 }
             } catch (error) {
-                console.log(error);
+                setErrors(["Back-end crashed"]);
+                setIsLoaded(true);               
             }
         };
         fetchData();

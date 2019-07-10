@@ -74,7 +74,7 @@ export default class Solver {
             this.solutionPath.push(init);
             this.isSolutionFound = true;
         }
-        while (!this.isSolutionFound && counter < 500000) {
+        while (!this.isSolutionFound && counter < 100000) {
             counter++;
 			// currentPuzzle is Board on top of the PriorityQueue
             this.currentPuzzle = openQueue.dequeue();
