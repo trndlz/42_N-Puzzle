@@ -1,6 +1,7 @@
 import express = require("express");
 import { Request, Response } from "express";
 import Solver from "../Solver";
+import { verify } from "crypto";
 const router = express.Router();
 
 router.post("/", (req: Request, res: Response) => {
@@ -41,6 +42,7 @@ router.post("/", (req: Request, res: Response) => {
             "heuristics": solver.heuristics,
             "timeComplexity": solver.timeComplexity,
             "sizeComplexity": solver.sizeComplexity,
+            "searchAlgo": solver.searchAlgo,
         })
     }
 });

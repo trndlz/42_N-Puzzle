@@ -18,10 +18,10 @@ export default class Solver {
     public solutionPath: NBoard[];
 
     // Time Complexity
-    // Sum of all Nodes added to openQueue
+    // Total number of states ever selected in the "opened" set
     public timeComplexity: number;
     // Size Complexity
-    // Sum of all Nodes in openQueue plus closedSet 
+    // Maximum number of states ever represented in memory at the same time during the search 
     public sizeComplexity: number;
     public isSolutionFound: boolean;
     public searchAlgo: string;

@@ -1,7 +1,6 @@
-import { ICoord, board2D, board1D } from "./Types";
-import { isEqual, flatten, find, findIndex } from "lodash"
+import { ICoord, board1D } from "./Types";
+import { isEqual } from "lodash"
 import { addCoord, swapZeroPosition } from "./Helpers";
-import { timingSafeEqual } from "crypto";
 
 export default class NBoard {
 
@@ -50,7 +49,10 @@ export default class NBoard {
     }
 
     private getH(): number {
-        if (this.heuristics === "HAMMING") {
+        if (this.searchAlgo === "UNIFORM_COST") {
+            return 0;
+        }
+        else if (this.heuristics === "HAMMING") {
             return this.hammingPriority();
         }
         else if (this.heuristics === "MIXED_LINEAR_CONFLICT_MANHATTAN") {

@@ -57,10 +57,11 @@ const Import = () => {
                     <Radio.Button value="A_STAR">{searchAlgoDesc.A_STAR}</Radio.Button>
                     <Radio.Button value="WEIGHED_A_STAR">{searchAlgoDesc.WEIGHED_A_STAR}</Radio.Button>
                     <Radio.Button value="GREEDY">{searchAlgoDesc.GREEDY}</Radio.Button>
+                    <Radio.Button value="UNIFORM_COST">{searchAlgoDesc.UNIFORM_COST}</Radio.Button>
                 </Radio.Group>
                 {(searchAlgo === "WEIGHED_A_STAR") && (
-                    <div>
-                        <Title level={2} style={{ margin: '20px' }}>Set Weight</Title>
+                    <div style={{ margin: '20px' }}>
+                        <Title level={2}>Set Weight</Title>
                         <Radio.Group onChange={changeAStarWeight} defaultValue="1">
                             <Radio.Button value="1">1</Radio.Button>
                             <Radio.Button value="2">2</Radio.Button>
@@ -70,15 +71,22 @@ const Import = () => {
                         </Radio.Group>
                     </div>
                 )}
-                <Title level={2} style={{ margin: '20px' }}>Heuristics</Title>
-                <Radio.Group onChange={changeHeuristics} defaultValue="MANHATTAN">
-                    <Radio.Button value="MANHATTAN">{HeuristicsDesc.MANHATTAN}</Radio.Button>
-                    <Radio.Button value="HAMMING">{HeuristicsDesc.HAMMING}</Radio.Button>
-                    <Radio.Button value="MIXED_LINEAR_CONFLICT_MANHATTAN">{HeuristicsDesc.MIXED_LINEAR_CONFLICT_MANHATTAN}</Radio.Button>
-                </Radio.Group>
-                <Button type="primary" onClick={formValidation} style={{ margin: '20px' }}>
+
+                {(searchAlgo !== "UNIFORM_COST") && (
+                    <div style={{ margin: '20px' }}>
+                        <Title level={2} >Heuristics</Title>
+                        <Radio.Group onChange={changeHeuristics} defaultValue="MANHATTAN">
+                            <Radio.Button value="MANHATTAN">{HeuristicsDesc.MANHATTAN}</Radio.Button>
+                            <Radio.Button value="HAMMING">{HeuristicsDesc.HAMMING}</Radio.Button>
+                            <Radio.Button value="MIXED_LINEAR_CONFLICT_MANHATTAN">{HeuristicsDesc.MIXED_LINEAR_CONFLICT_MANHATTAN}</Radio.Button>
+                        </Radio.Group>
+                    </div>
+                )}
+                <div style={{ margin: '20px' }}>
+                <Button type="primary" onClick={formValidation}>
                     <Icon type="fire" />Submit
                 </Button>
+                </div>
             </div>
         )
     }
