@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Input, Typography, Radio, Switch, Icon, Button, Alert } from 'antd';
+import { Input, Typography, Radio, Icon, Button, Alert } from 'antd';
 import NPuzzle from "./NPuzzle";
 import { HeuristicsDesc, searchAlgoDesc } from "./Text";
 
