@@ -39,7 +39,7 @@ router.post("/", (req: Request, res: Response) => {
             "path": solver.solutionPath.map(e => e.currentPuzzle.toString()),
             "timer": elapsed + "ms",
             "target": solver.targetBoard.toString(),
-            "heuristics": solver.heuristics,
+            "heuristics": solver.searchAlgo !== "UNIFORM_COST" ? solver.heuristics : null,
             "timeComplexity": solver.timeComplexity,
             "sizeComplexity": solver.sizeComplexity,
             "searchAlgo": solver.searchAlgo,

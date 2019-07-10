@@ -86,22 +86,22 @@ export default class Solver {
                 return new NBoard(element, this.targetBoard, this.currentPuzzle.moves + 1, this.heuristics, this.searchAlgo, this.weight, this.currentPuzzle)
             });
             // For each child, 4 possibilities
-            for (let c = 0; c < children.length; c++) {
+            for (const child of children) {
 				// 1) Child is the target => We're done and build the history path from this chid to the initial state
-                if (children[c].isTarget) {
+                if (child.isTarget) {
                     this.isSolutionFound = true;
                     this.sizeComplexity = openQueue.items.length + closedList;
-                    this.buildHistory(children[c]);
+                    this.buildHistory(child);
                     break ;
                 }
                 // 2) Child has already been explored so it is in closedSet
-                else if (closedSet.test(children[c].currentPuzzle.toString())) {
+                else if (closedSet.test(child.currentPuzzle.toString())) {
                     closedList++;
                 }
 				// 3) Child is added in the priority queue and will be explored according to it's score
                 else {
                     this.timeComplexity++;
-                    openQueue.enqueue(children[c]);
+                    openQueue.enqueue(child);
                 }
             }
         }

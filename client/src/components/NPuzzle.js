@@ -15,7 +15,7 @@ const NPuzzle = (props) => {
     const [timer, setTimer] = useState([]);
     const [play, setPlay] = useState(false);
     const [heuristics, setHeuristics] = useState(props.heuristics);
-    const [searchAlgo] = useState(props.searchAlgo);
+    const [searchAlgo, setSearchAlgo] = useState(props.searchAlgo);
     const [aStarWeight] = useState(props.aStarWeight);
     const [isLoaded, setIsLoaded] = useState(false);
     const [currentBoard, setCurrentBoard] = useState(0);
@@ -48,7 +48,8 @@ const NPuzzle = (props) => {
                     setHeuristics(response.data.heuristics);
                     setMoves(response.data.moves);
                     setTimeComplexity(response.data.timeComplexity);
-                    setSizeComplexity(response.data.sizeComplexity)
+                    setSizeComplexity(response.data.sizeComplexity);
+                    setSearchAlgo(response.data.searchAlgo);
                     setPath(response.data.path.map((id) => id.split(',').map(a => parseInt(a))));
                     setTimer(response.data.timer);
                     setTarget(response.data.target.split(',').map(a => parseInt(a)))
@@ -107,7 +108,14 @@ const NPuzzle = (props) => {
         } else {
             return (
                 <div>
-                    <Statistics moves={moves} heuristics={heuristics} timer={timer} sizeComplexity={sizeComplexity} timeComplexity={timeComplexity} />
+                    <Statistics
+                        moves={moves}
+                        heuristics={heuristics}
+                        timer={timer}
+                        sizeComplexity={sizeComplexity}
+                        timeComplexity={timeComplexity}
+                        searchAlgo={searchAlgo}
+                    />
                     <div>
                         <Board input={path[currentBoard]} target={target} />
                     </div>

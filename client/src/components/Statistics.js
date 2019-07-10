@@ -1,6 +1,6 @@
 import React from "react";
 import { Statistic, Row, Col } from 'antd';
-import { HeuristicsDesc } from "./Text";
+import { HeuristicsDesc, searchAlgoDesc } from "./Text";
 
 
 const Statistics = props => {
@@ -25,7 +25,7 @@ const Statistics = props => {
                     <Statistic title="Heuristics" value={HeuristicsDesc[props.heuristics]} valueStyle={{ fontSize: "1.2em"}} />
                 </Col>
                 <Col span={8}>
-                    <Statistic title="Greedy" value={"Yes"} />
+                    <Statistic title="Search Algo" value={searchAlgoDesc[props.searchAlgo]} />
                 </Col>
             </Row>
         </div>
