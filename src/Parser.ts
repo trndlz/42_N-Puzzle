@@ -34,8 +34,7 @@ const isInputDataConsistent = (puzzle: board2D, size?: number) => {
     if (isSizeInputConform(height, size) || isSizeConsistent(puzzle, height) || areEachNumbers(puzzle, height)) { 
         return true;
     }
-    return false;
-    
+    return false;   
 }
 
 // Convert input string to board (type: board)

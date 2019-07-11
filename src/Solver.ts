@@ -1,5 +1,5 @@
 import { parseInputString } from "./Parser";
-import { IParsedData, board2D, board1D } from "./Types";
+import { board1D } from "./Types";
 import { spiralArray } from "./components/spiralArray";
 import { isEqual, flatten } from "lodash";
 import NBoard from "./Puzzle";
