@@ -4,6 +4,7 @@ import { Layout, Menu, Icon } from 'antd';
 import NPuzzle from "./components/NPuzzle";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Import from "./components/Import";
+import RandomBoard from "./components/RandomBoard";
 
 const { Content, Footer } = Layout;
 
@@ -26,23 +27,23 @@ const App = () => {
   };
 
   const DefaultPuzzle3 = () => {
-    const defaultSize3 = "# This puzzle is solvable\n3\n8 6 1\n7 2 0\n5 4 3\n";
-    return <NPuzzle rawPuzzle={defaultSize3} />;
+    const random = RandomBoard(3)
+    return <NPuzzle rawPuzzle={random} heuristics={"MIXED_LINEAR_CONFLICT_MANHATTAN"} />;
   }
 
   const DefaultPuzzle4 = () => {
-    const defaultSize4 = "# This puzzle is solvable\n4\n1 0 3 4\n12 2 13 5\n11 9 14 8\n15 10 7 6\n";
-    return <NPuzzle rawPuzzle={defaultSize4} />;
+    const random = RandomBoard(4)
+    return <NPuzzle rawPuzzle={random} heuristics={"MIXED_LINEAR_CONFLICT_MANHATTAN"} />;
   }
 
   const Header = () => {
     return (
       <Menu onClick={handleClick} defaultSelectedKeys={[current]} mode="horizontal">
         <Menu.Item key="3">
-          <Link to="/"><Icon type="gift" />Default Size 3</Link>
+          <Link to="/"><Icon type="gift" />Random Size 3</Link>
         </Menu.Item>
         <Menu.Item key="4">
-          <Link to="/puzzle4"><Icon type="lock" />Default Size 4</Link>
+          <Link to="/puzzle4"><Icon type="lock" />Random Size 4</Link>
         </Menu.Item>
         <Menu.Item key="5">
           <Link to="/import"><Icon type="upload" />Import</Link>
