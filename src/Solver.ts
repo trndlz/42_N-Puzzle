@@ -74,23 +74,24 @@ export default class Solver {
             this.solutionPath.push(init);
             this.isSolutionFound = true;
         }
-        while (!this.isSolutionFound && counter < 100000) {
+        while (!this.isSolutionFound && counter < 300000) {
             counter++;
 			// currentPuzzle is Board on top of the PriorityQueue
             this.currentPuzzle = openQueue.dequeue();
             // As we "explore" this Board, a hash representing the board is added to the closedSet
             closedSet.add(this.currentPuzzle.currentPuzzle.toString());
-            
 			// I create an array of all possible moves of my current puzzle
             const children = this.currentPuzzle.childrenPuzzles.map(element => {
                 return new NBoard(element, this.targetBoard, this.currentPuzzle.moves + 1, this.heuristics, this.searchAlgo, this.weight, this.currentPuzzle)
             });
+            const openQueueLength = openQueue.items.length
+            this.sizeComplexity = openQueueLength > this.sizeComplexity ? openQueueLength : this.sizeComplexity;
             // For each child, 4 possibilities
             for (const child of children) {
 				// 1) Child is the target => We're done and build the history path from this chid to the initial state
                 if (child.isTarget) {
                     this.isSolutionFound = true;
-                    this.sizeComplexity = openQueue.items.length + closedList;
+                    
                     this.buildHistory(child);
                     break ;
                 }

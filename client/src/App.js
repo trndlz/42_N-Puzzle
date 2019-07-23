@@ -28,7 +28,7 @@ const App = () => {
 
   const DefaultPuzzle3 = () => {
     const random = RandomBoard(3)
-    return <NPuzzle rawPuzzle={random} heuristics={"MIXED_LINEAR_CONFLICT_MANHATTAN"} />;
+    return <NPuzzle rawPuzzle={random} heuristics={"MANHATTAN"} />;
   }
 
   const DefaultPuzzle4 = () => {

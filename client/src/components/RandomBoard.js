@@ -28,7 +28,7 @@ const swapEmpty = (s, p) => {
 
 const RandomBoard = (size) => {
     let puzzle = TargetBoard(size);
-    for (let i = 0; i < 500; i++) {
+    for (let i = 0; i < 400; i++) {
         swapEmpty(size, puzzle);
     }
     return BoardToString(puzzle, size);
